@@ -1,0 +1,15 @@
+export const RESTORE_TOKEN = 'RESTORE_TOKEN'
+
+export const SIGN_IN = 'SIGN_IN'
+export const SIGN_IN_FAILED = 'SIGN_IN_FAILED'
+
+
+export const SIGN_UP = 'SIGN_UP'
+export const SIGN_UP_FAILED = 'SIGN_UP_FAILED'
+
+export const SIGN_OUT = 'SIGN_OUT'
+
+export const GET_LOCATION = 'GET_LOCATION'
+export const GET_LOCATION_STRING = 'GET_LOCATION_STRING'
+export const GET_LOCATION_SENDER = 'GET_LOCATION_SENDER'
+export const GET_LOCATION_RECEIVER = 'GET_LOCATION_RECEIVER'
