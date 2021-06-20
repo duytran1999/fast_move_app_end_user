@@ -9,7 +9,7 @@ import { FirebaseApp } from '../../api/firebase/index'
 import { connect } from 'react-redux'
 import { CommonActions } from '@react-navigation/native';
 import { actSignOut } from '../../actions/index'
-import { actGetMyLocationString } from '../../actions/actionLocation'
+import { actGetMyLocationString, actGetMyLocation } from '../../actions/actionLocation'
 import GlobalStyles from '../../constants/GlobalStyle';
 
 import { SetAccount, GetAccount, RemoveAccount } from '../../api/secure/index'
@@ -24,27 +24,108 @@ class Feed extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            location: null,
-            errorMsg: null,
-            latitude: this.props.myUserLocation.coords.latitude,
-            longitude: this.props.myUserLocation.coords.longitude,
-            coordsUser: this.props.myUserLocation.coords
+            // latitude: 10.791671,// 10.791671, //
+            // longitude: 106.703345,//106.703345 ,//
+            // coordsUser: null
+            location: null
         }
     }
     convertCordToLocationString = async (region) => {
         try {
             let locationString = await Location.reverseGeocodeAsync(region)
-            //console.log(locationString)
         } catch (error) {
             console.log(error)
         }
     }
-    componentDidMount() {
-        this.props.ConvertCordsToLocation(this.props.myUserLocation.coords)
-    }
+    async componentDidMount() {
+        try {
+            let { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                alert('Permission to access location was denied')
+                return;
+            }
+            let location = await Location.getCurrentPositionAsync({})
+            this.setState({
+                location: location
+            })
+        }
+        catch (error) {
+            console.log(error)
+            let status = Location.getProviderStatusAsync()
+            if (!(await status).locationServicesEnabled) {
+                alert("Enable Services")
 
+            }
+        }
+    }
+    showCoordsSender = () => {
+        console.log("coord in feed")
+        console.log(this.props.locationCoordsSender)
+        if (this.props.locationCoordsSender !== null) {
+            return (
+                <Marker coordinate={this.props.locationCoordsSender} >
+                    <Image
+                        source={require('../../assets/icon/truck.png')}
+                        style={{ height: 50, width: 50 }}
+                    />
+                </Marker>
+            )
+        }
+        return (
+            null
+        )
+    }
+    showCoordsReceiver = () => {
+        console.log("coord in feed")
+        console.log(this.props.locationCoordsReceiver)
+        if (this.props.locationCoordsReceiver !== null) {
+            return (
+                <Marker coordinate={this.props.locationCoordsReceiver} >
+                    <Image
+                        source={require('../../assets/icon/destination.png')}
+                        style={{ height: 50, width: 50 }}
+                    />
+                </Marker>
+            )
+        }
+        return (
+            null
+        )
+    }
+    renderLocation = (locationString) => {
+        return locationString.street + " " + locationString.district + " " + locationString.subregion + " " + locationString.city
+    }
     render() {
-        console.log(this.props.myUserLocationString)
+
+        if (this.state.location === null) {
+            return (
+                <View style={{ flex: 1, backgroundColor: 'white', alignItems: 'center', justifyContent: 'center' }}>
+
+                    <View >
+                        <ImageBackground
+                            source={require("../../assets/icon/Ripple-1s-200px.gif")}
+                            style={{
+                                height: WIDTH_DEVICE_SCREEN / 2, width: WIDTH_DEVICE_SCREEN / 2,
+                                alignItems: 'center', justifyContent: 'center'
+                            }}
+                        >
+                            <Image
+                                source={require("../../assets/icon/compass.png")}
+                                style={{
+                                    height: 40, width: 40,
+
+                                }}
+                            />
+                        </ImageBackground>
+
+                    </View>
+                    <Text style={{ fontWeight: 'bold' }}>
+                        Đang định vị
+                    </Text>
+
+                </View>
+            )
+        }
         return (
             <SafeAreaView style={{ flex: 1, backgroundColor: '#fcfcfc' }}>
                 <View style={{ flex: 1 }}>
@@ -52,16 +133,23 @@ class Feed extends Component {
                         style={{ width: WIDTH_DEVICE_WINDOW, height: HEIGHT_DEVICE_WINDOW / 2 }}
                         provider='google'
                         initialRegion={{
-                            latitude: this.state.latitude,
-                            longitude: this.state.longitude,
+                            latitude: this.state.location.coords.latitude,
+                            longitude: this.state.location.coords.longitude,
                             latitudeDelta: 0.01,
                             longitudeDelta: 0.01 * ASPECT_RATIO
                         }}
                     >
                         <Marker
-                            coordinate={this.state.coordsUser}
+                            coordinate={this.state.location.coords}
                             image={require('../../assets/icon/pin(2).png')}
                         />
+                        {
+                            this.showCoordsSender()
+                            
+                        }
+                        {
+                            this.showCoordsReceiver()
+                        }
                     </MapView>
                     <View style={{
                         position: 'absolute',
@@ -158,20 +246,47 @@ class Feed extends Component {
                                     />
                                 </View>
                                 <TouchableOpacity
-                                    onPress={() => this.props.navigation.navigate("LocationSender")}
+                                    onPress={() => this.props.navigation.navigate("LocationSender", this.state.location)}
                                 >
-                                    <View style={{
-                                        width: WIDTH_DEVICE_SCREEN - 50,
-                                        height: HEIGHT_DEVICE_SCREEN / 12,
-                                        justifyContent: 'center',
-                                        paddingLeft: 20, borderBottomWidth: 0.5, borderBottomColor: '#bdc3c7'
-                                    }}>
-                                        <View>
-                                            <Text style={{ fontSize: 16, color: '#2EA2EF', fontWeight: 'bold' }}>
-                                                Chọn điểm gửi hàng
-                                            </Text>
-                                        </View>
-                                    </View>
+                                    {
+                                        this.props.senderInfo === null
+                                            ?
+                                            <View style={{
+                                                width: WIDTH_DEVICE_SCREEN - 50,
+                                                height: HEIGHT_DEVICE_SCREEN / 12,
+                                                justifyContent: 'center',
+                                                borderBottomWidth: 0.5, borderBottomColor: '#bdc3c7'
+                                            }}>
+                                                <View>
+                                                    <Text style={{ fontSize: 16, color: '#2EA2EF', fontWeight: 'bold' }}>
+                                                        Chọn điểm gửi hàng
+                                                    </Text>
+                                                </View>
+                                            </View>
+                                            :
+                                            <View style={{
+                                                width: WIDTH_DEVICE_SCREEN - 50,
+                                                height: HEIGHT_DEVICE_SCREEN / 12,
+                                                justifyContent: 'center',
+                                                paddingLeft: 20, borderBottomWidth: 0.5, borderBottomColor: '#bdc3c7'
+                                            }}>
+                                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                                    <Text style={{ fontSize: 14, color: '#2EA2EF', fontWeight: 'bold' }}>
+                                                        {this.props.senderInfo.nameSender}
+                                                    </Text>
+                                                    <Text style={{ fontSize: 20, color: '#2EA2EF', fontWeight: 'bold', marginHorizontal: 10 }} >
+                                                        .
+                                                    </Text>
+                                                    <Text style={{ fontSize: 14, color: '#2EA2EF', fontWeight: 'normal' }}>
+                                                        {this.props.senderInfo.phoneSender}
+                                                    </Text>
+                                                </View>
+                                                <Text style={{ color: '#535c68' }}>
+                                                    {this.renderLocation(this.props.locationSender)}
+                                                </Text>
+                                            </View>
+
+                                    }
                                 </TouchableOpacity>
                             </View>
                         </View>
@@ -188,27 +303,54 @@ class Feed extends Component {
                                     />
                                 </View>
                                 <TouchableOpacity
-                                    onPress={() => this.props.navigation.navigate("LocationReceiver")}
+                                    onPress={() => this.props.navigation.navigate("LocationReceiver", this.state.location)}
                                 >
-                                    <View style={{
-                                        width: WIDTH_DEVICE_SCREEN - 50,
-                                        height: HEIGHT_DEVICE_SCREEN / 12,
-                                        justifyContent: 'center',
-                                        paddingLeft: 20
-                                    }}>
-                                        <View>
-                                            <Text style={{ fontSize: 16, color: '#D7443E', fontWeight: 'bold' }}>
-                                                Chọn điểm nhận hàng
-                                            </Text>
-                                        </View>
-                                    </View>
+                                    {
+                                        this.props.receiverInfo === null
+                                            ?
+                                            <View style={{
+                                                width: WIDTH_DEVICE_SCREEN - 50,
+                                                height: HEIGHT_DEVICE_SCREEN / 12,
+                                                justifyContent: 'center',
+                                                borderBottomWidth: 0.5, borderBottomColor: '#bdc3c7'
+                                            }}>
+                                                <View>
+                                                    <Text style={{ fontSize: 16, color: '#D7443E', fontWeight: 'bold' }}>
+                                                        Chọn điểm nhận hàng
+                                                    </Text>
+                                                </View>
+                                            </View>
+                                            :
+                                            <View style={{
+                                                width: WIDTH_DEVICE_SCREEN - 50,
+                                                height: HEIGHT_DEVICE_SCREEN / 12,
+                                                justifyContent: 'center',
+                                                paddingLeft: 20, borderBottomWidth: 0.5, borderBottomColor: '#bdc3c7'
+                                            }}>
+                                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                                    <Text style={{ fontSize: 14, color: '#D7443E', fontWeight: 'bold' }}>
+                                                        {this.props.receiverInfo.nameReceiver}
+                                                    </Text>
+                                                    <Text style={{ fontSize: 20, color: '#D7443E', fontWeight: 'bold', marginHorizontal: 10 }} >
+                                                        .
+                                                    </Text>
+                                                    <Text style={{ fontSize: 14, color: '#D7443E', fontWeight: 'normal' }}>
+                                                        {this.props.receiverInfo.phoneReceiver}
+                                                    </Text>
+                                                </View>
+                                                <Text style={{ color: '#535c68' }}>
+                                                    {this.renderLocation(this.props.locationReceiver)}
+                                                </Text>
+                                            </View>
+
+                                    }
                                 </TouchableOpacity>
                             </View>
                         </View>
                     </View>
-                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingTop: 20 }}>
                         <TouchableOpacity
-                            onPress={() => this.getLocation()}
+                            onPress={() => { }}
                         >
                             <View style={{
                                 width: WIDTH_DEVICE_SCREEN - 50,
@@ -228,6 +370,25 @@ class Feed extends Component {
         )
     }
 }
+const setCurrentLocation = async () => {
+    try {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+            alert('Permission to access location was denied')
+            return;
+        }
+        let location = await Location.getCurrentPositionAsync({})
+        return location
+    }
+    catch (error) {
+        console.log(error)
+        let status = Location.getProviderStatusAsync()
+        if (!(await status).locationServicesEnabled) {
+            alert("Enable Services")
+
+        }
+    }
+};
 const convertCordToLocationString = async (region) => {
     try {
         let locationString = await Location.reverseGeocodeAsync(region)
@@ -241,6 +402,12 @@ const mapStateToProps = (state) => {
         //userName: state.authReducer.userName,
         myUserLocation: state.locationReducer.userLocation,
         myUserLocationString: state.locationReducer.userLocationString,
+        locationCoordsSender: state.locationReducer.locationSenderCoords,
+        locationSender: state.locationReducer.locationSender,
+        senderInfo: state.locationReducer.senderInfo,
+        locationCoordsReceiver: state.locationReducer.locationReceiverCoords,
+        locationReceiver: state.locationReducer.locationReceiver,
+        receiverInfo: state.locationReducer.receiverInfo,
     }
 }
 
@@ -250,6 +417,12 @@ const mapDispatchToProps = (dispatch, props) => {
             convertCordToLocationString(locationString)
                 .then(locationString => {
                     dispatch(actGetMyLocationString(locationString))
+                })
+        },
+        SetCurrentLocation: () => {
+            setCurrentLocation()
+                .then((location) => {
+                    dispatch(actGetMyLocation(location))
                 })
         }
     }

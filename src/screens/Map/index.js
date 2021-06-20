@@ -21,49 +21,13 @@ class Map extends Component {
             errorMsg: null,
             street: "",
             locationString: null
-
         }
     }
-    setCurrentLocation = async () => {
-        try {
-            let { status } = await Location.requestForegroundPermissionsAsync();
-            if (status !== 'granted') {
-                this.setState({
-                    errorMsg: 'Permission to access location was denied'
-                })
-                return;
-            }
-            let location = await Location.getCurrentPositionAsync({});
-            this.setState({
-                location
-            })
-            //console.log(this.state.location)
-        }
-        catch (error) {
-            console.log(error)
-            let status = Location.getProviderStatusAsync()
-            if (!(await status).locationServicesEnabled) {
-                alert("Enable Services")
-
-            }
-        }
-    };
-    convertCordToLocationString = (region) => {
-        Location.reverseGeocodeAsync(region)
-            .then((location) => {
-                this.setState({
-                    locationString: location
-                })
-                //console.log(location)
-            })
-            .then((location) => {
-
-            })
+    renderLocation = (locationString) => {
+        return locationString.street + " " + locationString.district + " " + locationString.subregion + " " + locationString.city
     }
     componentDidMount() {
-        //Location.setGoogleApiKey("AIzaSyAtsqS5438KqdndUUofKeiebMWphxjR3zo")
-        //Location.setGoogleApiKey(API_KEY_GOOGLE)
-        this.setCurrentLocation()
+
     }
     render() {
         let { locationString } = this.state
@@ -80,7 +44,7 @@ class Map extends Component {
                             latitudeDelta: 0.01,
                             longitudeDelta: 0.01 * ASPECT_RATIO
                         }}
-                        onRegionChangeComplete={(region => this.convertCordToLocationString(region))}
+                        onRegionChangeComplete={(region => this.props.setLocation(region))}
                         showsUserLocation={true}
                     >
 
@@ -97,7 +61,7 @@ class Map extends Component {
                         >
                             <View style={{ flexDirection: 'row', justifyContent: "space-between", alignItems: 'center', }} >
                                 <TouchableOpacity
-                                    onPress={() => this.props.navigation.goBack()}
+                                    onPress={() => this.props.changeNavigateMap()}
                                 >
                                     <View>
                                         <Image
@@ -139,19 +103,15 @@ class Map extends Component {
                         >
                             <Text>
                                 {
-                                    locationString === null
-                                        ?
-                                        ""
-                                        :
-                                        locationString[0].street + " " + locationString[0].district + " " + locationString[0].subregion + " " + locationString[0].city
+                                    this.renderLocation(this.props.locationString)
                                 }
                             </Text>
                         </View>
                     </View>
                     <View style={{
                         left: '50%',
-                        marginLeft: -25,
-                        marginTop: 0,
+                        marginLeft: -20,
+                        marginTop: -45,
                         position: 'absolute',
                         top: '50%'
                     }}>
@@ -178,9 +138,10 @@ class Map extends Component {
 
                         <View style={{ padding: 5 }}>
                             <TouchableOpacity
-                                onPress={() => this.props.navigation.navigate("LocationSender", {
-
-                                })}
+                                onPress={() =>{
+                                    this.props.confirmLocation()
+                                    this.props.changeNavigateMap()
+                                }}
                             >
                                 <View style={{
                                     backgroundColor: '#D7443E',

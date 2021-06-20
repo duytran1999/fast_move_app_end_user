@@ -11,7 +11,7 @@ export class HeaderBar extends Component {
                 height:50,backgroundColor:'#D7443E'
             }}>
                 <TouchableOpacity
-                    onPress={() => this.props.navigation.goBack()}
+                    onPress={() => this.props.goBackHomeScreen()}
                 >
                     <View>
                         <FontAwesome5 name="chevron-left" color="white" size={30} />

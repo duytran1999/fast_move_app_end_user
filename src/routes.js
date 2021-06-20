@@ -62,9 +62,9 @@ class AppStack extends Component {
         return (
             <appStack.Navigator>
                 <appStack.Screen name="HomeTab" component={Feed} options={{ headerShown: false }} />
-                <appStack.Screen name="LocationSender" component={LocationSender} options={{ headerShown: false }} />
-                <appStack.Screen name="LocationReceiver" component={LocationReceiver} options={{ headerShown: false }} />
-                <appStack.Screen name="Map" component={Map} options={{ headerShown: false }} />
+                <appStack.Screen name="LocationSender" component={LocationSender} options={{ headerShown: false, gestureEnabled: false }} />
+                <appStack.Screen name="LocationReceiver" component={LocationReceiver} options={{ headerShown: false, gestureEnabled: false }} />
+                <appStack.Screen name="Map" component={Map} options={{ headerShown: false, gestureEnabled: false }} />
             </appStack.Navigator>
         )
     }
@@ -79,8 +79,9 @@ class MainApp extends Component {
             <drawerTab.Navigator
                 initialRouteName="AppStack"
                 drawerContent={(props) => <DrawerView {...props} />}
+
             >
-                <drawerTab.Screen name="AppStack" component={AppStack} />
+                <drawerTab.Screen name="AppStack" component={AppStack} options={{ gestureEnabled: false }} />
                 <drawerTab.Screen name="AddPost" component={AddPost} />
             </drawerTab.Navigator >
         )
@@ -89,7 +90,7 @@ class MainApp extends Component {
 
 
 export class Routes extends Component {
-    componentDidMount() {
+    async componentDidMount() {
         this.props.checkSignIn()
     }
     render() {
@@ -120,33 +121,7 @@ export class Routes extends Component {
 }
 
 
-const setCurrentLocation = async () => {
-    try {
-        let { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') {
-            alert('Permission to access location was denied')
-            return;
-        }
-        let location = await Location.getCurrentPositionAsync({})
-        return location
-    }
-    catch (error) {
-        console.log(error)
-        let status = Location.getProviderStatusAsync()
-        if (!(await status).locationServicesEnabled) {
-            alert("Enable Services")
 
-        }
-    }
-};
-const convertCordToLocationString = async (region) => {
-    try {
-        let locationString = await Location.reverseGeocodeAsync(region)
-        return locationString
-    } catch (error) {
-        console.log(error)
-    }
-}
 const mapStateToProps = (state) => {
     return {
         isLoading: state.authReducer.isLoading,
@@ -159,30 +134,14 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch, props) => {
     return {
         checkSignIn: () => {
-            setCurrentLocation()
-                .then((location) => {
-                    dispatch(actGetMyLocation(location))
-                    // convertCordToLocationString(location)
-                    //     .then(locationString => {
-                    //         dispatch(actGetMyLocationString(locationString))
-                    //     })
+            GetAccount('userAccount')
+                .then(user => {
+                    dispatch(actRestoreToken(user));
                 })
-                .then(() => {
-                    GetAccount('userAccount')
-                        .then(user => {
-                            dispatch(actRestoreToken(user));
-                        })
-                        .then(() => {
-
-                        })
+                .catch(error => {
+                    console.log(error)
                 })
-        },
-        // ConvertCordsToLocation: (locationString) => {
-        //     convertCordToLocationString(locationString)
-        //         .then(locationString => {
-        //             dispatch(actGetMyLocationString(locationString))
-        //         })
-        // }
+        }
     }
 }
 

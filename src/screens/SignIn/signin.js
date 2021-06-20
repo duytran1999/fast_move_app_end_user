@@ -101,7 +101,7 @@ class SignIn extends Component {
                                 ) : (<View />)
                         }
                         <Formik
-                            initialValues={{ email: '', password: '' }}
+                            initialValues={{ email: 'tranduy@gmail.com', password: '123456' }}
                             onSubmit={values => this.submit(values)}
                             validationSchema={SignInSchema}
                         >
@@ -199,7 +199,7 @@ class SignIn extends Component {
                                                 onPress={handleSubmit}>
                                                 <Text style={{ fontSize: 15, fontWeight: '600', color: 'white' }}>
                                                     Sign In
-                                                        </Text>
+                                                </Text>
                                             </TouchableOpacity>
                                         </View>
                                     </View>
@@ -215,7 +215,8 @@ class SignIn extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        errorMsgSignIn: state.authReducer.errorMsgSignIn
+        errorMsgSignIn: state.authReducer.errorMsgSignIn,
+        myUserLocation: state.locationReducer.userLocation,
     }
 }
 
