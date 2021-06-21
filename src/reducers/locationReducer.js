@@ -11,7 +11,7 @@ const INITIAL_STATE = {
     locationReceiver: null,
     locationReceiverCoords: null,
     receiverInfo: null,
-
+    serviceTransport: null
 };
 
 // chú ý initial state là object ko là mảng
@@ -40,6 +40,11 @@ const locationReducer = (state = INITIAL_STATE, action) => {
                 locationReceiver: action.locationReceiver,
                 locationReceiverCoords: action.locationReceiverCoords,
                 receiverInfo: action.receiverInfo,
+            };
+        case types.GET_SERVICE_TRANSPORT:
+            return {
+                ...state,
+                serviceTransport: action.serviceTransport
             };
 
         default:

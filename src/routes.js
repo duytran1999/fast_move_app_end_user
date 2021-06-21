@@ -62,9 +62,7 @@ class AppStack extends Component {
         return (
             <appStack.Navigator>
                 <appStack.Screen name="HomeTab" component={Feed} options={{ headerShown: false }} />
-                <appStack.Screen name="LocationSender" component={LocationSender} options={{ headerShown: false, gestureEnabled: false }} />
-                <appStack.Screen name="LocationReceiver" component={LocationReceiver} options={{ headerShown: false, gestureEnabled: false }} />
-                <appStack.Screen name="Map" component={Map} options={{ headerShown: false, gestureEnabled: false }} />
+               
             </appStack.Navigator>
         )
     }
@@ -79,10 +77,11 @@ class MainApp extends Component {
             <drawerTab.Navigator
                 initialRouteName="AppStack"
                 drawerContent={(props) => <DrawerView {...props} />}
-
             >
-                <drawerTab.Screen name="AppStack" component={AppStack} options={{ gestureEnabled: false }} />
-                <drawerTab.Screen name="AddPost" component={AddPost} />
+                <drawerTab.Screen name="AppStack" component={AppStack} options={{ }} />
+                <drawerTab.Screen name="LocationSender" component={LocationSender} options={{ headerShown: false, gestureEnabled: false }} />
+                <drawerTab.Screen name="LocationReceiver" component={LocationReceiver} options={{ headerShown: false, gestureEnabled: false }} />
+                <drawerTab.Screen name="Map" component={Map} options={{ headerShown: false, gestureEnabled: false }} />
             </drawerTab.Navigator >
         )
     }

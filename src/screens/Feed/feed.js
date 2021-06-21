@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
-import { Text, View, TouchableOpacity, SafeAreaView, StyleSheet, StatusBar, FlatList, Image, Platform, ActivityIndicator, ImageBackground } from 'react-native'
+import { Text, View, TouchableOpacity, SafeAreaView, StyleSheet, StatusBar, FlatList, Image, Platform, ActivityIndicator, ImageBackground, Button } from 'react-native'
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import * as Location from 'expo-location';
 import Modal from 'react-native-modal';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
+import MapViewDirections from 'react-native-maps-directions';
 
 import { FirebaseApp } from '../../api/firebase/index'
 
@@ -11,8 +13,9 @@ import { CommonActions } from '@react-navigation/native';
 import { actSignOut } from '../../actions/index'
 import { actGetMyLocationString, actGetMyLocation } from '../../actions/actionLocation'
 import GlobalStyles from '../../constants/GlobalStyle';
-
+import { listService } from './listService'
 import { SetAccount, GetAccount, RemoveAccount } from '../../api/secure/index'
+import { API_KEY_GOOGLE } from '../../constants/api_key'
 
 //Component
 
@@ -27,8 +30,13 @@ class Feed extends Component {
             // latitude: 10.791671,// 10.791671, //
             // longitude: 106.703345,//106.703345 ,//
             // coordsUser: null
-            location: null
+            location: null,
+            modalVisible: false,
+            serviceTransport: listService[0]
         }
+    }
+    setModalVisible = (visible) => {
+        this.setState({ modalVisible: visible });
     }
     convertCordToLocationString = async (region) => {
         try {
@@ -95,6 +103,265 @@ class Feed extends Component {
     renderLocation = (locationString) => {
         return locationString.street + " " + locationString.district + " " + locationString.subregion + " " + locationString.city
     }
+    renderPickerSender = () => {
+        return (
+            <View style={{ flex: 1 }}>
+                <View style={{ flexDirection: 'row' }}>
+                    <View style={{
+                        width: 50,
+                        height: HEIGHT_DEVICE_SCREEN / 12,
+                        justifyContent: 'center', alignItems: 'center'
+                    }}>
+                        <Image
+                            source={require('../../assets/icon/circle.png')}
+                            style={{ height: 20, width: 20 }}
+                        />
+                    </View>
+                    <TouchableOpacity
+                        onPress={() => this.props.navigation.navigate("LocationSender", this.state.location)}
+                    >
+                        {
+                            this.props.senderInfo === null
+                                ?
+                                <View style={{
+                                    width: WIDTH_DEVICE_SCREEN - 50,
+                                    height: HEIGHT_DEVICE_SCREEN / 12,
+                                    justifyContent: 'center'
+                                }}>
+                                    <View>
+                                        <Text style={{ fontSize: 16, color: '#2EA2EF', fontWeight: 'bold' }}>
+                                            Chọn điểm gửi hàng
+                                        </Text>
+                                    </View>
+                                </View>
+                                :
+                                <View style={{
+                                    width: WIDTH_DEVICE_SCREEN - 50,
+                                    height: HEIGHT_DEVICE_SCREEN / 12,
+                                    justifyContent: 'center',
+                                }}>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                        <Text style={{ fontSize: 14, color: '#2EA2EF', fontWeight: 'bold' }}>
+                                            {this.props.senderInfo.nameSender}
+                                        </Text>
+                                        <Text style={{ fontSize: 20, color: '#2EA2EF', fontWeight: 'bold', marginHorizontal: 10 }} >
+                                            .
+                                        </Text>
+                                        <Text style={{ fontSize: 14, color: '#2EA2EF', fontWeight: 'normal' }}>
+                                            {this.props.senderInfo.phoneSender}
+                                        </Text>
+                                    </View>
+                                    <Text style={{ color: '#535c68' }} numberOfLines={2}>
+                                        {this.renderLocation(this.props.locationSender)}
+                                    </Text>
+                                </View>
+
+                        }
+                    </TouchableOpacity>
+                </View>
+            </View>
+        )
+    }
+
+    renderPickerReceiver = () => {
+        return (
+            <View style={{ flex: 1 }}>
+                <View style={{ flexDirection: 'row' }}>
+                    <View style={{
+                        width: 50,
+                        height: HEIGHT_DEVICE_SCREEN / 12,
+                        justifyContent: 'center', alignItems: 'center'
+                    }}>
+                        <Image
+                            source={require('../../assets/icon/rounded-black-square-shape.png')}
+                            style={{ height: 20, width: 20 }}
+                        />
+                    </View>
+                    <TouchableOpacity
+                        onPress={() => this.props.navigation.navigate("LocationReceiver", this.state.location)}
+                    >
+                        {
+                            this.props.receiverInfo === null
+                                ?
+                                <View style={{
+                                    width: WIDTH_DEVICE_SCREEN - 50,
+                                    height: HEIGHT_DEVICE_SCREEN / 12,
+                                    justifyContent: 'center',
+                                }}>
+                                    <View>
+                                        <Text style={{ fontSize: 16, color: '#D7443E', fontWeight: 'bold' }}>
+                                            Chọn điểm nhận hàng
+                                        </Text>
+                                    </View>
+                                </View>
+                                :
+                                <View style={{
+                                    width: WIDTH_DEVICE_SCREEN - 50,
+                                    height: HEIGHT_DEVICE_SCREEN / 12,
+                                    justifyContent: 'center', paddingRight: 20
+                                }}>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                        <Text style={{ fontSize: 14, color: '#D7443E', fontWeight: 'bold' }}>
+                                            {this.props.receiverInfo.nameReceiver}
+                                        </Text>
+                                        <Text style={{ fontSize: 20, color: '#D7443E', fontWeight: 'bold', marginHorizontal: 10 }} >
+                                            .
+                                        </Text>
+                                        <Text style={{ fontSize: 14, color: '#D7443E', fontWeight: 'normal' }}>
+                                            {this.props.receiverInfo.phoneReceiver}
+                                        </Text>
+                                    </View>
+                                    <Text style={{ color: '#535c68' }} numberOfLines={2}>
+                                        {this.renderLocation(this.props.locationReceiver)}
+                                    </Text>
+                                </View>
+
+                        }
+                    </TouchableOpacity>
+                </View>
+            </View>
+        )
+    }
+
+    renderSelectedService = () => {
+        return (
+            <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10 }}>
+                <Image
+                    source={this.state.serviceTransport.icon}
+                    style={{ height: 30, width: 30 }}
+                />
+                <View style={{ marginLeft: 10 }}>
+                    <Text style={{ fontWeight: '900', }}>
+                        {this.state.serviceTransport.name}
+                    </Text>
+                    <Text style={{ color: 'silver', fontSize: 10 }}>
+                        {this.state.serviceTransport.description}
+                    </Text>
+                </View>
+            </View>
+        )
+    }
+    renderSelectService = () => {
+        return (
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                <TouchableOpacity onPress={() => { this.setModalVisible(!this.state.modalVisible); }}>
+                    <View style={{ alignItems: 'center' }}>
+
+                        <View style={{
+                            height: HEIGHT_DEVICE_SCREEN / 12,
+                            width: WIDTH_DEVICE_WINDOW * 0.95,
+                            borderColor: '#b2bec3', borderWidth: 1,
+                            borderRadius: 10, justifyContent: 'center'
+                        }} >
+                            {
+                                this.renderSelectedService()
+                            }
+                        </View>
+                        <View style={{
+                            height: 10,
+                            width: WIDTH_DEVICE_WINDOW * 0.85,
+                            backgroundColor: '#dcdde1',
+                            borderBottomLeftRadius: 10, borderBottomRightRadius: 10
+                        }} />
+                        <View style={{
+                            height: 10,
+                            width: WIDTH_DEVICE_WINDOW * 0.7,
+                            backgroundColor: '#ecf0f1',
+                            borderBottomLeftRadius: 10, borderBottomRightRadius: 10
+                        }} />
+                    </View>
+                </TouchableOpacity>
+            </View>
+        )
+    }
+    renderWrapModal = () => {
+        return (
+            <Modal
+                onSwipeComplete={() => this.setModalVisible(!this.state.modalVisible)}
+                visible={this.state.modalVisible}
+                swipeDirection="down"
+                scrollHorizontal={true}
+                style={{ margin: 0 }}
+            >
+                <View style={{ height: 200 }} >
+                    <View style={{ alignItems: 'center', justifyContent: 'space-between', flex: 1 }}>
+                        <View
+                            style={{ width: 10, height: 10 }}
+                        />
+                        <FontAwesome5
+                            name={"chevron-down"}
+                            size={30}
+                            color={"white"}
+                        />
+                    </View>
+                </View>
+                <View style={{
+                    height: HEIGHT_DEVICE_SCREEN - 200,
+                    borderTopLeftRadius: 20, borderTopRightRadius: 20,
+                    backgroundColor: 'white'
+                }}>
+
+                    <View style={{ alignItems: 'center' }}>
+                        <TouchableOpacity
+                            onPress={() => this.setModalVisible(!this.state.modalVisible)}
+                        >
+                            <View style={{ alignItems: 'center', marginTop: 20 }}>
+
+                                <Text style={{ fontWeight: 'bold', color: "#636e72" }}>
+                                    Tất Cả Dịch Vụ
+                                </Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                    <FlatList
+                        data={listService}
+                        renderItem={({ item, index }) => (
+                            <TouchableOpacity
+                                onPress={() => {
+                                    this.setState({
+                                        serviceTransport: item
+                                    })
+                                    this.setModalVisible(!this.state.modalVisible)
+                                }
+                                }
+                            >
+                                <View
+                                    style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10, paddingBottom: 10 }}
+                                    key={index}
+                                >
+                                    <Image
+                                        source={item.icon}
+                                        style={{ height: 50, width: 50 }}
+                                    />
+                                    <View style={{ marginLeft: 10 }}>
+                                        <Text style={{ fontWeight: '900', }}>
+                                            {item.name}
+                                        </Text>
+                                        <Text style={{ color: 'silver', fontSize: 13 }}>
+                                            {item.description}
+                                        </Text>
+                                    </View>
+                                </View>
+                            </TouchableOpacity>
+                        )}
+                    />
+                </View>
+            </Modal>
+        )
+    }
+    renderDirectionMap = () => {
+        if (this.props.locationCoordsSender !== null && this.props.locationCoordsReceiver !== null) {
+            return (
+                <MapViewDirections
+                    origin={this.props.locationCoordsSender}
+                    destination={this.props.locationCoordsReceiver}
+                    apikey={API_KEY_GOOGLE}
+                    strokeWidth={3}
+                    strokeColor="hotpink"
+                />
+            )
+        }
+    }
     render() {
 
         if (this.state.location === null) {
@@ -130,7 +397,7 @@ class Feed extends Component {
             <SafeAreaView style={{ flex: 1, backgroundColor: '#fcfcfc' }}>
                 <View style={{ flex: 1 }}>
                     <MapView
-                        style={{ width: WIDTH_DEVICE_WINDOW, height: HEIGHT_DEVICE_WINDOW / 2 }}
+                        style={{ flex: 1 }}
                         provider='google'
                         initialRegion={{
                             latitude: this.state.location.coords.latitude,
@@ -143,13 +410,9 @@ class Feed extends Component {
                             coordinate={this.state.location.coords}
                             image={require('../../assets/icon/pin(2).png')}
                         />
-                        {
-                            this.showCoordsSender()
-                            
-                        }
-                        {
-                            this.showCoordsReceiver()
-                        }
+                        {this.showCoordsSender()}
+                        {this.showCoordsReceiver()}
+                        {this.renderDirectionMap()}
                     </MapView>
                     <View style={{
                         position: 'absolute',
@@ -203,160 +466,19 @@ class Feed extends Component {
                     </View>
                 </View>
                 <View style={{ flex: 1 }}>
-                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-
-                        <View style={{ alignItems: 'center' }}>
-                            <TouchableOpacity>
-                                <View style={{
-                                    height: HEIGHT_DEVICE_SCREEN / 15,
-                                    width: WIDTH_DEVICE_WINDOW * 0.95,
-                                    borderColor: '#b2bec3', borderWidth: 1,
-                                    borderRadius: 10,
-                                }} >
-                                    <Text>
-                                        DUy
-                                    </Text>
-                                </View>
-                            </TouchableOpacity>
-                            <View style={{
-                                height: HEIGHT_DEVICE_SCREEN / 50,
-                                width: WIDTH_DEVICE_WINDOW * 0.85,
-                                backgroundColor: '#dcdde1',
-                                borderBottomLeftRadius: 10, borderBottomRightRadius: 10
-                            }} />
-                            <View style={{
-                                height: HEIGHT_DEVICE_SCREEN / 50,
-                                width: WIDTH_DEVICE_WINDOW * 0.7,
-                                backgroundColor: '#ecf0f1',
-                                borderBottomLeftRadius: 10, borderBottomRightRadius: 10
-                            }} />
-                        </View>
-                    </View>
-                    <View style={{ flex: 1 }}>
-                        <View style={{ flex: 1 }}>
-                            <View style={{ flexDirection: 'row' }}>
-                                <View style={{
-                                    width: 50,
-                                    height: HEIGHT_DEVICE_SCREEN / 12,
-                                    justifyContent: 'center', alignItems: 'center'
-                                }}>
-                                    <Image
-                                        source={require('../../assets/icon/circle.png')}
-                                        style={{ height: 20, width: 20 }}
-                                    />
-                                </View>
-                                <TouchableOpacity
-                                    onPress={() => this.props.navigation.navigate("LocationSender", this.state.location)}
-                                >
-                                    {
-                                        this.props.senderInfo === null
-                                            ?
-                                            <View style={{
-                                                width: WIDTH_DEVICE_SCREEN - 50,
-                                                height: HEIGHT_DEVICE_SCREEN / 12,
-                                                justifyContent: 'center',
-                                                borderBottomWidth: 0.5, borderBottomColor: '#bdc3c7'
-                                            }}>
-                                                <View>
-                                                    <Text style={{ fontSize: 16, color: '#2EA2EF', fontWeight: 'bold' }}>
-                                                        Chọn điểm gửi hàng
-                                                    </Text>
-                                                </View>
-                                            </View>
-                                            :
-                                            <View style={{
-                                                width: WIDTH_DEVICE_SCREEN - 50,
-                                                height: HEIGHT_DEVICE_SCREEN / 12,
-                                                justifyContent: 'center',
-                                                paddingLeft: 20, borderBottomWidth: 0.5, borderBottomColor: '#bdc3c7'
-                                            }}>
-                                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                                    <Text style={{ fontSize: 14, color: '#2EA2EF', fontWeight: 'bold' }}>
-                                                        {this.props.senderInfo.nameSender}
-                                                    </Text>
-                                                    <Text style={{ fontSize: 20, color: '#2EA2EF', fontWeight: 'bold', marginHorizontal: 10 }} >
-                                                        .
-                                                    </Text>
-                                                    <Text style={{ fontSize: 14, color: '#2EA2EF', fontWeight: 'normal' }}>
-                                                        {this.props.senderInfo.phoneSender}
-                                                    </Text>
-                                                </View>
-                                                <Text style={{ color: '#535c68' }}>
-                                                    {this.renderLocation(this.props.locationSender)}
-                                                </Text>
-                                            </View>
-
-                                    }
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                        <View style={{ flex: 1 }}>
-                            <View style={{ flexDirection: 'row' }}>
-                                <View style={{
-                                    width: 50,
-                                    height: HEIGHT_DEVICE_SCREEN / 12,
-                                    justifyContent: 'center', alignItems: 'center'
-                                }}>
-                                    <Image
-                                        source={require('../../assets/icon/rounded-black-square-shape.png')}
-                                        style={{ height: 20, width: 20 }}
-                                    />
-                                </View>
-                                <TouchableOpacity
-                                    onPress={() => this.props.navigation.navigate("LocationReceiver", this.state.location)}
-                                >
-                                    {
-                                        this.props.receiverInfo === null
-                                            ?
-                                            <View style={{
-                                                width: WIDTH_DEVICE_SCREEN - 50,
-                                                height: HEIGHT_DEVICE_SCREEN / 12,
-                                                justifyContent: 'center',
-                                                borderBottomWidth: 0.5, borderBottomColor: '#bdc3c7'
-                                            }}>
-                                                <View>
-                                                    <Text style={{ fontSize: 16, color: '#D7443E', fontWeight: 'bold' }}>
-                                                        Chọn điểm nhận hàng
-                                                    </Text>
-                                                </View>
-                                            </View>
-                                            :
-                                            <View style={{
-                                                width: WIDTH_DEVICE_SCREEN - 50,
-                                                height: HEIGHT_DEVICE_SCREEN / 12,
-                                                justifyContent: 'center',
-                                                paddingLeft: 20, borderBottomWidth: 0.5, borderBottomColor: '#bdc3c7'
-                                            }}>
-                                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                                    <Text style={{ fontSize: 14, color: '#D7443E', fontWeight: 'bold' }}>
-                                                        {this.props.receiverInfo.nameReceiver}
-                                                    </Text>
-                                                    <Text style={{ fontSize: 20, color: '#D7443E', fontWeight: 'bold', marginHorizontal: 10 }} >
-                                                        .
-                                                    </Text>
-                                                    <Text style={{ fontSize: 14, color: '#D7443E', fontWeight: 'normal' }}>
-                                                        {this.props.receiverInfo.phoneReceiver}
-                                                    </Text>
-                                                </View>
-                                                <Text style={{ color: '#535c68' }}>
-                                                    {this.renderLocation(this.props.locationReceiver)}
-                                                </Text>
-                                            </View>
-
-                                    }
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    </View>
-                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingTop: 20 }}>
+                    {this.renderWrapModal()}
+                    {this.renderSelectService()}
+                    {this.renderPickerSender()}
+                    {this.renderPickerReceiver()}
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end', paddingBottom: 10 }}>
                         <TouchableOpacity
-                            onPress={() => { }}
+
                         >
                             <View style={{
-                                width: WIDTH_DEVICE_SCREEN - 50,
+                                width: WIDTH_DEVICE_SCREEN - 10,
                                 height: HEIGHT_DEVICE_SCREEN / 12,
                                 backgroundColor: '#D7443E',
-                                borderRadius: 20,
+                                borderRadius: 10,
                                 alignItems: 'center', justifyContent: 'center'
                             }}>
                                 <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold', textDecorationLine: 'underline' }}>
