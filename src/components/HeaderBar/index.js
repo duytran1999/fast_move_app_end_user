@@ -25,7 +25,7 @@ export class HeaderBar extends Component {
 
                 <TouchableOpacity>
                     <View>
-                        <FontAwesome5 name="ellipsis-h" color="white" size={30} />
+                       
                     </View>
                 </TouchableOpacity>
             </View>

@@ -11,7 +11,7 @@ import { FirebaseApp } from '../../api/firebase/index'
 import { connect } from 'react-redux'
 import { CommonActions } from '@react-navigation/native';
 import { actSignOut } from '../../actions/index'
-import { actGetMyLocationString, actGetMyLocation } from '../../actions/actionLocation'
+import { actGetMyLocationString, actGetMyLocation, actGetDistanceMatrix } from '../../actions/actionLocation'
 import GlobalStyles from '../../constants/GlobalStyle';
 import { listService } from './listService'
 import { SetAccount, GetAccount, RemoveAccount } from '../../api/secure/index'
@@ -358,6 +358,23 @@ class Feed extends Component {
                     apikey={API_KEY_GOOGLE}
                     strokeWidth={3}
                     strokeColor="hotpink"
+                    onStart={(params) => {
+                        console.log(`Started routing between "${params.origin}" and "${params.destination}"`);
+                    }}
+                    onReady={result => {
+                        console.log(`Distance: ${result.distance} km`)
+                        console.log(`Duration: ${result.duration} min.`)
+                        this.props.GetDistanceMatrix(result.distance, result.duration)
+
+                        this.mapView.fitToCoordinates(result.coordinates, {
+                            edgePadding: {
+                                right: (WIDTH_DEVICE_WINDOW / 20),
+                                bottom: (HEIGHT_DEVICE_WINDOW / 20),
+                                left: (WIDTH_DEVICE_WINDOW / 20),
+                                top: (HEIGHT_DEVICE_WINDOW / 20),
+                            }
+                        });
+                    }}
                 />
             )
         }
@@ -405,6 +422,7 @@ class Feed extends Component {
                             latitudeDelta: 0.01,
                             longitudeDelta: 0.01 * ASPECT_RATIO
                         }}
+                        ref={c => this.mapView = c}
                     >
                         <Marker
                             coordinate={this.state.location.coords}
@@ -472,7 +490,7 @@ class Feed extends Component {
                     {this.renderPickerReceiver()}
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end', paddingBottom: 10 }}>
                         <TouchableOpacity
-
+                            onPress={()=>this.props.navigation.navigate("ConfirmOrder")}
                         >
                             <View style={{
                                 width: WIDTH_DEVICE_SCREEN - 10,
@@ -546,6 +564,9 @@ const mapDispatchToProps = (dispatch, props) => {
                 .then((location) => {
                     dispatch(actGetMyLocation(location))
                 })
+        },
+        GetDistanceMatrix: (distanceTrip, durationTrip) => {
+            dispatch(actGetDistanceMatrix(distanceTrip, durationTrip))
         }
     }
 }

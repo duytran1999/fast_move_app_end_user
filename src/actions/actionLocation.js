@@ -11,7 +11,6 @@ export const actGetMyLocation = (location) => {
 }
 
 export const actGetMyLocationString = (locationString) => {
-
     return {
         type: types.GET_LOCATION_STRING,
         locationString: locationString
@@ -40,5 +39,13 @@ export const actGetLocationReceiver = (
         locationReceiver: locationReceiver,
         locationReceiverCoords: locationReceiverCoords,
         receiverInfo: receiverInfo
+    }
+}
+
+export const actGetDistanceMatrix = (distanceTrip, durationTrip) => {
+    return {
+        type: types.GET_DISTANCE_MATRIX,
+        distanceTrip: distanceTrip,
+        durationTrip: durationTrip,
     }
 }

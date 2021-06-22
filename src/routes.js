@@ -28,6 +28,7 @@ import Search from './screens/Search/index'
 import Notifications from './screens/Notifications/index'
 import Map from './screens/Map/index'
 import AddPost from './screens/AddPost/index'
+import ConfirmOrder from './screens/ConfirmOrder/index'
 //Component
 
 import DrawerView from './components/Drawer/Drawer'
@@ -62,7 +63,7 @@ class AppStack extends Component {
         return (
             <appStack.Navigator>
                 <appStack.Screen name="HomeTab" component={Feed} options={{ headerShown: false }} />
-               
+                <appStack.Screen name="ConfirmOrder" component={ConfirmOrder} options={{ headerShown: false }} />
             </appStack.Navigator>
         )
     }
@@ -78,7 +79,7 @@ class MainApp extends Component {
                 initialRouteName="AppStack"
                 drawerContent={(props) => <DrawerView {...props} />}
             >
-                <drawerTab.Screen name="AppStack" component={AppStack} options={{ }} />
+                <drawerTab.Screen name="AppStack" component={AppStack} options={{}} />
                 <drawerTab.Screen name="LocationSender" component={LocationSender} options={{ headerShown: false, gestureEnabled: false }} />
                 <drawerTab.Screen name="LocationReceiver" component={LocationReceiver} options={{ headerShown: false, gestureEnabled: false }} />
                 <drawerTab.Screen name="Map" component={Map} options={{ headerShown: false, gestureEnabled: false }} />
