@@ -9,6 +9,7 @@ import GlobalStyles from '../../constants/GlobalStyle';
 import { listFunction } from './function'
 import { SetAccount, GetAccount, RemoveAccount } from '../../api/secure/index'
 import { actSignOut } from '../../actions/index'
+import { actCreateOrderTransport } from '../../actions/actionLocation'
 
 import { FirebaseApp } from '../../api/firebase/index'
 
@@ -36,6 +37,10 @@ class Drawer extends Component {
 
     componentDidMount() {
 
+    }
+    CreateOrder = () => {
+        this.props.CreateOrder()
+        this.props.navigation.closeDrawer()
     }
     render() {
         return (
@@ -77,20 +82,76 @@ class Drawer extends Component {
                     </View>
                 </View>
                 <ScrollView style={{ marginTop: 10 }}>
-
-                    {listFunction.map((item, index) => (
-                        <TouchableOpacity style={{ marginVertical: 10, marginHorizontal: 10 }} key={index}>
-                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                <Image
-                                    source={item.icon}
-                                    style={{ height: 35, width: 35, marginRight: 20 }}
-                                />
-                                <Text style={{ fontWeight: 'bold', fontSize: 18, color: "#2f3640" }}>
-                                    {item.name}
-                                </Text>
-                            </View>
-                        </TouchableOpacity>
-                    ))}
+                    <TouchableOpacity
+                        style={{ marginVertical: 10, marginHorizontal: 10 }}
+                        onPress={() => this.CreateOrder()}
+                    >
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Image
+                                source={require('../../assets/icon/plus.png')}
+                                style={{ height: 35, width: 35, marginRight: 20 }}
+                            />
+                            <Text style={{ fontWeight: 'bold', fontSize: 18, color: "#2f3640" }}>
+                                Thêm Đơn Hàng
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={{ marginVertical: 10, marginHorizontal: 10 }}
+                        onPress={() => { }}
+                    >
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Image
+                                source={require('../../assets/icon/gear.png')}
+                                style={{ height: 35, width: 35, marginRight: 20 }}
+                            />
+                            <Text style={{ fontWeight: 'bold', fontSize: 18, color: "#2f3640" }}>
+                                Quản Lý Đơn Hàng
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={{ marginVertical: 10, marginHorizontal: 10 }}
+                        onPress={() => { }}
+                    >
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Image
+                                source={require('../../assets/icon/bell.png')}
+                                style={{ height: 35, width: 35, marginRight: 20 }}
+                            />
+                            <Text style={{ fontWeight: 'bold', fontSize: 18, color: "#2f3640" }}>
+                                Thông Báo
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={{ marginVertical: 10, marginHorizontal: 10 }}
+                        onPress={() => { }}
+                    >
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Image
+                                source={require('../../assets/icon/help.png')}
+                                style={{ height: 35, width: 35, marginRight: 20 }}
+                            />
+                            <Text style={{ fontWeight: 'bold', fontSize: 18, color: "#2f3640" }}>
+                                Trợ Giúp
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={{ marginVertical: 10, marginHorizontal: 10 }}
+                        onPress={() => { }}
+                    >
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Image
+                                source={require('../../assets/icon/contact.png')}
+                                style={{ height: 35, width: 35, marginRight: 20 }}
+                            />
+                            <Text style={{ fontWeight: 'bold', fontSize: 18, color: "#2f3640" }}>
+                                Liên Hệ
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
                 </ScrollView>
                 <View>
                     <TouchableOpacity
@@ -133,6 +194,9 @@ const mapDispatchToProps = (dispatch, props) => {
                         name: "SignIn"
                     })
                 })
+        },
+        CreateOrder: () => {
+            dispatch(actCreateOrderTransport())
         }
     }
 }

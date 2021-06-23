@@ -1,8 +1,11 @@
+import { actCreateOrderTransport } from '../../actions/actionLocation'
+
 export const listFunction = [
     {
         id: '1',
         name: 'Thêm Đơn Hàng',
-        icon: require('../../assets/icon/plus.png')
+        icon: require('../../assets/icon/plus.png'),
+        actions: actCreateOrderTransport()
     },
     {
         id: '2',
@@ -24,5 +27,5 @@ export const listFunction = [
         name: 'Liên Hệ',
         icon: require('../../assets/icon/contact.png')
     },
-    
+
 ]

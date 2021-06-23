@@ -49,3 +49,9 @@ export const actGetDistanceMatrix = (distanceTrip, durationTrip) => {
         durationTrip: durationTrip,
     }
 }
+
+export const actCreateOrderTransport = () => {
+    return {
+        type: types.CREATE_NEW_ORDER_TRANSPORT,
+    }
+}

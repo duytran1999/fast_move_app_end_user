@@ -24,8 +24,8 @@ class SignIn extends Component {
             email: '',
             password: '',
             imageData: [
-                require('../../assets/picture/dating/dating1.jpg'),
-                require('../../assets/picture/dating/dating2.jpg'),
+                require('../../assets/picture/intro/cc1.jpg'),
+                require('../../assets/picture/intro/download.png'),
             ]
         }
     }
@@ -70,9 +70,11 @@ class SignIn extends Component {
                 }}>
                     <View>
                         <Text style={{ fontSize: 25, fontWeight: 'bold' }}>
-                            The best <Text style={{ fontSize: 35, color: '#D7443E' }}> Dating</Text>
+                            Giao hàng <Text style={{ fontSize: 35, color: '#D7443E' }}> Fast</Text>
                         </Text>
-                        <Text style={{ fontSize: 25, fontWeight: 'bold' }}> Experience   </Text>
+                        <Text style={{ fontSize: 25, fontWeight: 'bold' }}>
+                            Trải nghiệm <Text style={{ fontSize: 35, color: '#D7443E' }}>Move</Text>
+                        </Text>
                     </View>
                     <View>
                         {
@@ -198,7 +200,7 @@ class SignIn extends Component {
                                                 }}
                                                 onPress={handleSubmit}>
                                                 <Text style={{ fontSize: 15, fontWeight: '600', color: 'white' }}>
-                                                    Sign In
+                                                    Đăng Nhập
                                                 </Text>
                                             </TouchableOpacity>
                                         </View>
