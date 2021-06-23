@@ -376,10 +376,13 @@ class Feed extends Component {
         //     this.props.navigation.navigate("ConfirmOrder", { resultTrip: result })
         // }
         let result = 9999
-        this.props.navigation.navigate("ConfirmOrder", { resultTrip: result })
+        this.props.navigation.navigate("ConfirmOrder",
+            {
+                resultTrip: result,
+                serviceType: this.state.serviceTransport
+            })
     }
     renderDirectionMap = () => {
-        y
         if (this.props.locationCoordsSender !== null && this.props.locationCoordsReceiver !== null) {
             return (
                 <MapViewDirections
@@ -408,6 +411,19 @@ class Feed extends Component {
                     }}
                 />
             )
+        }
+    }
+    fitAllMarkers() {
+        if (this.props.locationCoordsSender != null && this.props.locationCoordsReceiver != null) {
+            this.mapView.fitToCoordinates([this.props.locationCoordsSender, this.props.locationCoordsReceiver], {
+                edgePadding: {
+                    right: (WIDTH_DEVICE_WINDOW / 20),
+                    bottom: (HEIGHT_DEVICE_WINDOW / 20),
+                    left: (WIDTH_DEVICE_WINDOW / 20),
+                    top: (HEIGHT_DEVICE_WINDOW / 20),
+                },
+                animated: true,
+            });
         }
     }
     render() {
@@ -453,7 +469,7 @@ class Feed extends Component {
                             longitudeDelta: 0.01 * ASPECT_RATIO
                         }}
                         ref={c => this.mapView = c}
-
+                        onMapReady={this.fitAllMarkers.bind(this)}
                     >
                         <Marker
                             coordinate={this.state.location.coords}
