@@ -35,6 +35,10 @@ class Feed extends Component {
             serviceTransport: listService[0]
         }
     }
+    calculateDistance = (distanceTrip, serviceType) => {
+        let result = distanceTrip * serviceType
+        return result.toLocaleString('it-IT', { style: 'currency', currency: 'VND' })
+    }
     setModalVisible = (visible) => {
         this.setState({ modalVisible: visible });
     }
@@ -105,7 +109,7 @@ class Feed extends Component {
     }
     renderPickerSender = () => {
         return (
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, justifyContent: 'center' }}>
                 <View style={{ flexDirection: 'row' }}>
                     <View style={{
                         width: 50,
@@ -165,7 +169,7 @@ class Feed extends Component {
 
     renderPickerReceiver = () => {
         return (
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, justifyContent: 'center' }}>
                 <View style={{ flexDirection: 'row' }}>
                     <View style={{
                         width: 50,
@@ -251,10 +255,27 @@ class Feed extends Component {
                             height: HEIGHT_DEVICE_SCREEN / 12,
                             width: WIDTH_DEVICE_WINDOW * 0.95,
                             borderColor: '#b2bec3', borderWidth: 1,
-                            borderRadius: 10, justifyContent: 'center'
+                            borderRadius: 10,
+                            justifyContent: 'space-between',
+                            flexDirection: 'row',
                         }} >
                             {
                                 this.renderSelectedService()
+                            }
+                            {
+                                this.props.distanceTrip === null
+                                    ?
+                                    null
+                                    :
+
+                                    <View View style={{ alignItems: 'center', justifyContent: 'center', marginRight: 10 }}>
+                                        <Text style={{ fontWeight: 'bold' }}>
+                                            {
+                                                this.calculateDistance(this.props.distanceTrip, this.state.serviceTransport.coefficient)
+                                            }
+                                        </Text>
+                                    </View>
+
                             }
                         </View>
                         <View style={{
@@ -271,7 +292,7 @@ class Feed extends Component {
                         }} />
                     </View>
                 </TouchableOpacity>
-            </View>
+            </View >
         )
     }
     renderWrapModal = () => {
@@ -349,7 +370,16 @@ class Feed extends Component {
             </Modal>
         )
     }
+    navigateConfirmOrder = () => {
+        // if (this.props.distanceTrip !== null) {
+        //     let result = this.props.distanceTrip * this.state.serviceTransport.coefficient
+        //     this.props.navigation.navigate("ConfirmOrder", { resultTrip: result })
+        // }
+        let result = 9999
+        this.props.navigation.navigate("ConfirmOrder", { resultTrip: result })
+    }
     renderDirectionMap = () => {
+        y
         if (this.props.locationCoordsSender !== null && this.props.locationCoordsReceiver !== null) {
             return (
                 <MapViewDirections
@@ -372,7 +402,8 @@ class Feed extends Component {
                                 bottom: (HEIGHT_DEVICE_WINDOW / 20),
                                 left: (WIDTH_DEVICE_WINDOW / 20),
                                 top: (HEIGHT_DEVICE_WINDOW / 20),
-                            }
+                            },
+                            animated: true,
                         });
                     }}
                 />
@@ -380,7 +411,6 @@ class Feed extends Component {
         }
     }
     render() {
-
         if (this.state.location === null) {
             return (
                 <View style={{ flex: 1, backgroundColor: 'white', alignItems: 'center', justifyContent: 'center' }}>
@@ -423,6 +453,7 @@ class Feed extends Component {
                             longitudeDelta: 0.01 * ASPECT_RATIO
                         }}
                         ref={c => this.mapView = c}
+
                     >
                         <Marker
                             coordinate={this.state.location.coords}
@@ -430,7 +461,7 @@ class Feed extends Component {
                         />
                         {this.showCoordsSender()}
                         {this.showCoordsReceiver()}
-                        {this.renderDirectionMap()}
+                        {/* {this.renderDirectionMap()}  */}
                     </MapView>
                     <View style={{
                         position: 'absolute',
@@ -490,23 +521,38 @@ class Feed extends Component {
                     {this.renderPickerReceiver()}
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end', paddingBottom: 10 }}>
                         <TouchableOpacity
-                            onPress={()=>this.props.navigation.navigate("ConfirmOrder")}
+                            onPress={() => this.navigateConfirmOrder()}
                         >
                             <View style={{
                                 width: WIDTH_DEVICE_SCREEN - 10,
                                 height: HEIGHT_DEVICE_SCREEN / 12,
-                                backgroundColor: '#D7443E',
+                                backgroundColor: this.props.locationCoordsSender !== null && this.props.locationCoordsReceiver !== null ? '#D7443E' : "#7f8fa6",
                                 borderRadius: 10,
                                 alignItems: 'center', justifyContent: 'center'
                             }}>
-                                <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold', textDecorationLine: 'underline' }}>
-                                    Tiếp Tục
-                                </Text>
+                                {
+                                    this.props.locationCoordsSender !== null && this.props.locationCoordsReceiver !== null
+                                        ?
+                                        <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold', textDecorationLine: 'underline' }}>
+                                            Tiếp Tục
+                                        </Text>
+                                        :
+                                        <View style={{ alignItems: 'center' }}>
+                                            <Text style={{ color: 'white', fontSize: 12, fontWeight: 'bold' }}>
+                                                Chọn điểm gửi hàng và nhận hàng
+                                            </Text>
+                                            <Text style={{ color: 'white', fontSize: 10, textDecorationLine: 'underline' }}>
+                                                ( Bắt Buộc )
+                                            </Text>
+                                        </View>
+
+
+                                }
                             </View>
                         </TouchableOpacity>
                     </View>
                 </View>
-            </SafeAreaView>
+            </SafeAreaView >
         )
     }
 }
@@ -548,6 +594,7 @@ const mapStateToProps = (state) => {
         locationCoordsReceiver: state.locationReducer.locationReceiverCoords,
         locationReceiver: state.locationReducer.locationReceiver,
         receiverInfo: state.locationReducer.receiverInfo,
+        distanceTrip: state.locationReducer.distanceTrip
     }
 }
 

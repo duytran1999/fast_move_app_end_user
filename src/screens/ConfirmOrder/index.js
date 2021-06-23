@@ -40,9 +40,9 @@ export class ConfirmOrder extends Component {
     calculateTotalBill = () => {
         let { isBigGoods, tipMoney } = this.state
         if (isBigGoods == true) {
-            return 100000 + tipMoney + 20000
+            return this.props.route.params.resultTrip + tipMoney + 20000
         } else {
-            return 100000 + tipMoney
+            return this.props.route.params.resultTrip + tipMoney
         }
     }
     increaseMoneyTip = () => {
@@ -108,10 +108,18 @@ export class ConfirmOrder extends Component {
                         style={{ width: 30, height: 30 }}
                     />
 
-                    <Text style={{ color: 'silver', marginLeft: 10 }}>
-                        Để lại ghi chú cho tài xế của bạn ...
-                    </Text>
+                    {
+                        this.state.noteForDriver.length > 0
+                            ?
+                            <Text style={{ color: 'black', marginLeft: 10 }}>
+                                {this.state.noteForDriver}
+                            </Text>
+                            :
+                            <Text style={{ color: 'silver', marginLeft: 10 }}>
+                                Để lại ghi chú cho tài xế của bạn ...
+                            </Text>
 
+                    }
                 </View>
             </TouchableOpacity>
         )
@@ -317,7 +325,7 @@ export class ConfirmOrder extends Component {
                         }}>
                             <Image
                                 source={this.state.paymentType.img}
-                                style={{ width: 20, height: 20,marginRight:10 }}
+                                style={{ width: 20, height: 20, marginRight: 10 }}
                             />
                             <Text style={{ fontWeight: '600' }}>
                                 {this.state.paymentType.name}
