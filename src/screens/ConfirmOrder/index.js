@@ -37,7 +37,8 @@ export class ConfirmOrder extends Component {
             isBigGoods: false,
             tipMoney: 0,
             paymentType: PaymentType[0],
-            navigateSearchDriver: true
+            navigateSearchDriver: false,
+            orderStatus:null
         }
     }
     calculateTotalBill = () => {
@@ -364,6 +365,42 @@ export class ConfirmOrder extends Component {
     }
     goToScreenDriver = () => {
         let { navigateSearchDriver } = this.state
+        {
+        // console.log("=============================================================")
+        // console.log("toa do nguoi gui")
+        // console.log(this.props.locationCoordsSender)
+        // console.log("dia chi nguoi gui")
+        // console.log(this.renderLocation(this.props.locationSender))
+        // console.log("toa do nguoi nhan")
+        // console.log(this.props.locationCoordsReceiver)
+        // console.log("dia chi nguoi nhan")
+        // console.log(this.renderLocation(this.props.locationReceiver))
+        // console.log("TT nguoi gui")
+        // console.log(this.props.senderInfo)
+        // console.log("TT nguoi nhan")
+        // console.log(this.props.receiverInfo)
+        // console.log("Khoang cach")
+        // console.log(this.props.distanceTrip)
+        // console.log("=============================================================")
+    }
+        FirebaseApp.auth().onAuthStateChanged((user) => {
+            if (user) {
+              var uid = user.uid;
+
+              FirebaseApp.firestore().collection("order").doc(uid).collection().set({
+                locationCoordsSender:this.props.locationCoordsSender,
+                locationSender:this.props.locationSender,
+                locationCoordsReceiver:this.props.locationCoordsReceiver,
+                locationReceiver:this.props.locationReceiver,
+                senderInfo:this.props.senderInfo,
+                receiverInfo:this.props.receiverInfo,
+                distanceTrip:this.props.distanceTrip,
+            })
+            } else {
+              // User is signed out
+              // ...
+            }
+          });
         this.setState({
             navigateSearchDriver: !navigateSearchDriver
         })
