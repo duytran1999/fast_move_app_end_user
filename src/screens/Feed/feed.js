@@ -32,7 +32,8 @@ class Feed extends Component {
             // coordsUser: null
             location: null,
             modalVisible: false,
-            serviceTransport: listService[0]
+            serviceTransport: listService[0],
+            userID: null
         }
     }
     calculateDistance = (distanceTrip, serviceType) => {
@@ -52,13 +53,15 @@ class Feed extends Component {
     async componentDidMount() {
         try {
             let { status } = await Location.requestForegroundPermissionsAsync();
+            //let userId = await FirebaseApp.auth().currentUser.uid
             if (status !== 'granted') {
                 alert('Permission to access location was denied')
                 return;
             }
             let location = await Location.getCurrentPositionAsync({})
             this.setState({
-                location: location
+                location: location,
+               // userId: userId
             })
         }
         catch (error) {
@@ -70,6 +73,7 @@ class Feed extends Component {
             }
         }
     }
+
     showCoordsSender = () => {
         console.log("coord in feed")
         console.log(this.props.locationCoordsSender)
@@ -373,7 +377,10 @@ class Feed extends Component {
     navigateConfirmOrder = () => {
         // if (this.props.distanceTrip !== null) {
         //     let result = this.props.distanceTrip * this.state.serviceTransport.coefficient
-        //     this.props.navigation.navigate("ConfirmOrder", { resultTrip: result })
+        //     this.props.navigation.navigate("ConfirmOrder", {
+        //         resultTrip: result,
+        //         serviceType: this.state.serviceTransport
+        //     })
         // }
         let result = 9999
         this.props.navigation.navigate("ConfirmOrder",
@@ -477,7 +484,9 @@ class Feed extends Component {
                         />
                         {this.showCoordsSender()}
                         {this.showCoordsReceiver()}
-                        {this.renderDirectionMap()}
+
+                        {/* {this.renderDirectionMap()} */}
+
                     </MapView>
                     <View style={{
                         position: 'absolute',

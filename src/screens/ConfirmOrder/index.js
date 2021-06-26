@@ -11,6 +11,9 @@ import Modal from 'react-native-modal';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import MapViewDirections from 'react-native-maps-directions';
 import { ifIphoneX } from 'react-native-iphone-x-helper'
+import 'react-native-get-random-values';
+import { v4 as uuidv4 } from 'uuid';
+
 import { FirebaseApp } from '../../api/firebase/index'
 
 import HeaderBar from '../../components/HeaderBar/index'
@@ -37,7 +40,8 @@ export class ConfirmOrder extends Component {
             isBigGoods: false,
             tipMoney: 0,
             paymentType: PaymentType[0],
-            navigateSearchDriver: true
+            navigateSearchDriver: false,
+            orderStatus: null
         }
     }
     calculateTotalBill = () => {
@@ -362,8 +366,52 @@ export class ConfirmOrder extends Component {
             </View>
         )
     }
+    backToBillScreen = () => {
+        let { navigateSearchDriver } = this.state
+        this.setState({
+            navigateSearchDriver: !navigateSearchDriver
+        })
+    }
     goToScreenDriver = () => {
         let { navigateSearchDriver } = this.state
+        {
+            // console.log("=============================================================")
+            // console.log("toa do nguoi gui")
+            // console.log(this.props.locationCoordsSender)
+            // console.log("dia chi nguoi gui")
+            // console.log(this.renderLocation(this.props.locationSender))
+            // console.log("toa do nguoi nhan")
+            // console.log(this.props.locationCoordsReceiver)
+            // console.log("dia chi nguoi nhan")
+            // console.log(this.renderLocation(this.props.locationReceiver))
+            // console.log("TT nguoi gui")
+            // console.log(this.props.senderInfo)
+            // console.log("TT nguoi nhan")
+            // console.log(this.props.receiverInfo)
+            // console.log("Khoang cach")
+            // console.log(this.props.distanceTrip)
+            // console.log("=============================================================")
+        }
+        FirebaseApp.auth().onAuthStateChanged((user) => {
+            if (user) {
+                var uid = user.uid;
+                //   FirebaseApp.firestore().collection("order").doc(uid).collection("123").set({
+                //     locationCoordsSender:this.props.locationCoordsSender,
+                //     locationSender:this.props.locationSender,
+                //     locationCoordsReceiver:this.props.locationCoordsReceiver,
+                //     locationReceiver:this.props.locationReceiver,
+                //     senderInfo:this.props.senderInfo,
+                //     receiverInfo:this.props.receiverInfo,
+                //     distanceTrip:this.props.distanceTrip,
+                // })
+                FirebaseApp.firestore().collection("order").doc(uid).collection("historyOrder").add({
+                    a: 1
+                })
+            } else {
+                // User is signed out
+                // ...
+            }
+        });
         this.setState({
             navigateSearchDriver: !navigateSearchDriver
         })
@@ -453,7 +501,7 @@ export class ConfirmOrder extends Component {
                             top: Platform.OS === 'android' ? StatusBar.currentHeight : ifIphoneX() ? 50 : 20,
                             left: 10
                         }}>
-                            <TouchableOpacity onPress={() => this.goToScreenDriver()}>
+                            <TouchableOpacity onPress={() => this.backToBillScreen()}>
                                 <View style={{
                                     width: 40, height: 40, borderRadius: 20, backgroundColor: "white",
                                     justifyContent: 'center', alignItems: 'center',

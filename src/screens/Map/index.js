@@ -39,8 +39,8 @@ class Map extends Component {
                         style={{ flex: 1 }}
                         provider='google'
                         initialRegion={{
-                            latitude: 10.789013059217272,
-                            longitude: 106.67586240917444,
+                            latitude:this.props.location.latitude,
+                            longitude: this.props.location.longitude,
                             latitudeDelta: 0.01,
                             longitudeDelta: 0.01 * ASPECT_RATIO
                         }}

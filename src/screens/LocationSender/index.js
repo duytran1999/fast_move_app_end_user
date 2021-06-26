@@ -379,6 +379,10 @@ const mapStateToProps = (state) => {
     }
 }
 
+
+
+
+
 const mapDispatchToProps = (dispatch, props) => {
     return {
         ConvertCordsToLocation: (locationString) => {
