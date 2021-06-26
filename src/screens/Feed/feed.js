@@ -477,7 +477,7 @@ class Feed extends Component {
                         />
                         {this.showCoordsSender()}
                         {this.showCoordsReceiver()}
-                        {/* {this.renderDirectionMap()}  */}
+                        {this.renderDirectionMap()}
                     </MapView>
                     <View style={{
                         position: 'absolute',
