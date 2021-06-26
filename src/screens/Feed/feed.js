@@ -61,7 +61,7 @@ class Feed extends Component {
             let location = await Location.getCurrentPositionAsync({})
             this.setState({
                 location: location,
-               // userId: userId
+                // userId: userId
             })
         }
         catch (error) {
@@ -375,19 +375,14 @@ class Feed extends Component {
         )
     }
     navigateConfirmOrder = () => {
-        // if (this.props.distanceTrip !== null) {
-        //     let result = this.props.distanceTrip * this.state.serviceTransport.coefficient
-        //     this.props.navigation.navigate("ConfirmOrder", {
-        //         resultTrip: result,
-        //         serviceType: this.state.serviceTransport
-        //     })
-        // }
-        let result = 9999
-        this.props.navigation.navigate("ConfirmOrder",
-            {
+        if (this.props.distanceTrip !== null) {
+            let result = this.props.distanceTrip * this.state.serviceTransport.coefficient
+            this.props.navigation.navigate("ConfirmOrder", {
                 resultTrip: result,
-                serviceType: this.state.serviceTransport
+                serviceType: this.state.serviceTransport,
+                durationTrip: this.props.durationTrip
             })
+        }
     }
     renderDirectionMap = () => {
         if (this.props.locationCoordsSender !== null && this.props.locationCoordsReceiver !== null) {
@@ -485,7 +480,7 @@ class Feed extends Component {
                         {this.showCoordsSender()}
                         {this.showCoordsReceiver()}
 
-                        {/* {this.renderDirectionMap()} */}
+                        {this.renderDirectionMap()}
 
                     </MapView>
                     <View style={{
@@ -619,7 +614,8 @@ const mapStateToProps = (state) => {
         locationCoordsReceiver: state.locationReducer.locationReceiverCoords,
         locationReceiver: state.locationReducer.locationReceiver,
         receiverInfo: state.locationReducer.receiverInfo,
-        distanceTrip: state.locationReducer.distanceTrip
+        distanceTrip: state.locationReducer.distanceTrip,
+        durationTrip: state.locationReducer.durationTrip,
     }
 }
 

@@ -98,7 +98,7 @@ class Drawer extends Component {
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={{ marginVertical: 10, marginHorizontal: 10 }}
-                        onPress={() => { }}
+                        onPress={() => {this.props.navigation.navigate("OrderManage") }}
                     >
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <Image

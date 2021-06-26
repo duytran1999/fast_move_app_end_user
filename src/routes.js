@@ -21,14 +21,12 @@ import LocationSender from './screens/LocationSender/index'
 import LocationReceiver from './screens/LocationReceiver/index'
 import Setting from './screens/Setting/index'
 import Chat from './screens/Chat/chat'
-import ImageDetail from './screens/ImageDetail/index'
-import PostDetail from './screens/PostDetail/index'
 import PasswordRest from './screens/PasswordReset/index'
-import Search from './screens/Search/index'
 import Notifications from './screens/Notifications/index'
 import Map from './screens/Map/index'
-import AddPost from './screens/AddPost/index'
 import ConfirmOrder from './screens/ConfirmOrder/index'
+import OrderManage from './screens/OrderManage/index'
+import DetailTrip from './screens/DetailTrip/index'
 //Component
 
 import DrawerView from './components/Drawer/Drawer'
@@ -63,7 +61,9 @@ class AppStack extends Component {
         return (
             <appStack.Navigator>
                 <appStack.Screen name="HomeTab" component={Feed} options={{ headerShown: false }} />
-                <appStack.Screen name="ConfirmOrder" component={ConfirmOrder} options={{ headerShown: false }} />
+                <appStack.Screen name="ConfirmOrder" component={ConfirmOrder} options={{ headerShown: false, gestureEnabled: false }} />
+                <appStack.Screen name="OrderManage" component={OrderManage} options={{ headerShown: false, gestureEnabled: false }} />
+                <appStack.Screen name="DetailTrip" component={DetailTrip} options={{ headerShown: false, gestureEnabled: false }} />
             </appStack.Navigator>
         )
     }

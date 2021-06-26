@@ -19,7 +19,7 @@ export class LocationSender extends Component {
             locationString: "",
             locationStringSet: "",
             locationCoords: "",
-            detailLocation: '',
+            detailLocation: "",
             nameSender: "",
             phoneSender: "",
             bool1: false,
@@ -30,7 +30,6 @@ export class LocationSender extends Component {
     renderLocation = (locationString) => {
         return locationString.street + " " + locationString.district + " " + locationString.subregion + " " + locationString.city
     }
-
     async componentDidMount() {
 
         try {
@@ -128,9 +127,9 @@ export class LocationSender extends Component {
                             style={{ flex: 1 }}
                         >
                             <ScrollView >
-                                <View style={{flex:1,}}>
+                                <View style={{ flex: 1, }}>
                                     <View style={{
-                                        backgroundColor: "#ecf0f1",flex:2
+                                        backgroundColor: "#ecf0f1", flex: 2
                                     }}>
                                         <View>
                                             <Text style={{ fontSize: 10, color: "#7f8c8d", paddingHorizontal: 10, paddingVertical: 5 }}>
@@ -324,19 +323,19 @@ export class LocationSender extends Component {
                                             </View>
                                         </View>
                                     </View>
-                                    <View style={{ alignItems: 'center', justifyContent: 'center',height:HEIGHT_DEVICE_WINDOW-130}}>
+                                    <View style={{ alignItems: 'center', justifyContent: 'center', height: HEIGHT_DEVICE_WINDOW - 130 }}>
                                         <TouchableWithoutFeedback
                                             onPress={() => this.confirmLocationSender()}
                                         >
                                             <View style={{
-                                                width: WIDTH_DEVICE_SCREEN -10,
+                                                width: WIDTH_DEVICE_SCREEN - 10,
                                                 height: HEIGHT_DEVICE_SCREEN / 12,
                                                 backgroundColor: this.state.nameSender.length == 0 || this.state.phoneSender.length == 0 ? "#95afc0" : '#D7443E',
                                                 borderRadius: 20,
                                                 alignItems: 'center', justifyContent: 'center'
                                             }}>
                                                 <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold', textDecorationLine: 'underline' }}>
-                                                   { this.state.nameSender.length == 0 || this.state.phoneSender.length == 0 ? "Tiếp Tục" : 'Xác Nhận'}
+                                                    {this.state.nameSender.length == 0 || this.state.phoneSender.length == 0 ? "Tiếp Tục" : 'Xác Nhận'}
                                                 </Text>
                                             </View>
                                         </TouchableWithoutFeedback>

@@ -395,21 +395,25 @@ export class ConfirmOrder extends Component {
         FirebaseApp.auth().onAuthStateChanged((user) => {
             if (user) {
                 var uid = user.uid;
-                //   FirebaseApp.firestore().collection("order").doc(uid).collection("123").set({
-                //     locationCoordsSender:this.props.locationCoordsSender,
-                //     locationSender:this.props.locationSender,
-                //     locationCoordsReceiver:this.props.locationCoordsReceiver,
-                //     locationReceiver:this.props.locationReceiver,
-                //     senderInfo:this.props.senderInfo,
-                //     receiverInfo:this.props.receiverInfo,
-                //     distanceTrip:this.props.distanceTrip,
-                // })
                 FirebaseApp.firestore().collection("order").doc(uid).collection("historyOrder").add({
-                    a: 1
+                    orderId: uuidv4(),
+                    locationCoordsSender: this.props.locationCoordsSender,
+                    locationSender: this.props.locationSender,
+                    locationCoordsReceiver: this.props.locationCoordsReceiver,
+                    locationReceiver: this.props.locationReceiver,
+                    senderInfo: this.props.senderInfo,
+                    receiverInfo: this.props.receiverInfo,
+                    distanceTrip: this.props.distanceTrip,
+                    createOrder: new Date(),
+                    tipMoney: this.state.tipMoney,
+                    isBigGoods: this.state.isBigGoods,
+                    paymentType: this.state.paymentType.name,
+                    totalBillTrip: this.calculateTotalBill(),
+                    tripMoney: this.props.route.params.resultTrip,
+                    durationTrip: this.props.durationTrip
                 })
             } else {
-                // User is signed out
-                // ...
+                alert("Refresh App, pls")
             }
         });
         this.setState({
@@ -657,7 +661,8 @@ const mapStateToProps = (state) => {
         locationCoordsReceiver: state.locationReducer.locationReceiverCoords,
         locationReceiver: state.locationReducer.locationReceiver,
         receiverInfo: state.locationReducer.receiverInfo,
-        distanceTrip: state.locationReducer.distanceTrip
+        distanceTrip: state.locationReducer.distanceTrip,
+        durationTrip: state.locationReducer.durationTrip,
     }
 }
 
