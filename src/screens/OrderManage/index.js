@@ -57,8 +57,6 @@ export class OrderManage extends Component {
                             listOrder: order
                         })
                     })
-            } else {
-                alert("Refresh App, pls")
             }
         })
     }

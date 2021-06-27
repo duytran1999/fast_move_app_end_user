@@ -28,6 +28,7 @@ import ConfirmOrder from './screens/ConfirmOrder/index'
 import OrderManage from './screens/OrderManage/index'
 import DetailTrip from './screens/DetailTrip/index'
 import PersonalPage from './screens/PersonalPage/index'
+import SettingAccount from './screens/SettingAccount/index'
 //Component
 
 import DrawerView from './components/Drawer/Drawer'
@@ -66,6 +67,7 @@ class AppStack extends Component {
                 <appStack.Screen name="OrderManage" component={OrderManage} options={{ headerShown: false, gestureEnabled: false }} />
                 <appStack.Screen name="DetailTrip" component={DetailTrip} options={{ headerShown: false, gestureEnabled: false }} />
                 <appStack.Screen name="PersonalPage" component={PersonalPage} options={{ headerShown: false, gestureEnabled: false }} />
+                <appStack.Screen name="SettingAccount" component={SettingAccount} options={{ headerShown: false, gestureEnabled: false }} />
             </appStack.Navigator>
         )
     }

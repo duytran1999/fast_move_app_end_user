@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, View, TouchableOpacity, SafeAreaView, StyleSheet, ScrollView, Image } from 'react-native'
+import { Text, View, TouchableOpacity, SafeAreaView, StyleSheet, ScrollView, Image, Platform } from 'react-native'
 import { connect } from 'react-redux'
 import { WIDTH_DEVICE_WINDOW, HEIGHT_DEVICE_WINDOW } from '../../constants/DeviceDimensions'
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
@@ -11,6 +11,7 @@ import { SetAccount, GetAccount, RemoveAccount } from '../../api/secure/index'
 import { actSignOut } from '../../actions/index'
 import { actCreateOrderTransport } from '../../actions/actionLocation'
 
+import { ifIphoneX } from 'react-native-iphone-x-helper'
 import { FirebaseApp } from '../../api/firebase/index'
 
 const styles = StyleSheet.create({
@@ -21,7 +22,8 @@ const styles = StyleSheet.create({
     headerContain: {
         flexDirection: "row",
         alignItems: 'center',
-        paddingHorizontal: 10, paddingVertical: 5
+        paddingHorizontal: 10, paddingVertical: 5,
+
     },
     nameContain: {
         marginLeft: 10
@@ -32,11 +34,25 @@ class Drawer extends Component {
         super(props);
         this.state = {
             //locationString: null
+            name: "",
+            avatar:''
         }
     }
 
     componentDidMount() {
+        FirebaseApp.auth().onAuthStateChanged((user) => {
+            if (user) {
+                var uid = user.uid;
+                FirebaseApp.firestore().collection("User").doc(uid).get()
+                    .then(doc => {
+                        this.setState({
+                            name: doc.data().displayName,
+                            avatar:doc.data().imageAva
+                        })
+                    })
 
+            }
+        });
     }
     CreateOrder = () => {
         this.props.CreateOrder()
@@ -50,14 +66,23 @@ class Drawer extends Component {
                 >
                     <View style={styles.headerContain}>
                         <View>
-                            <Image
-                                source={require('../../assets/picture/mer1.jpg')}
-                                style={styles.avatar}
-                            />
+                            {
+                                this.state.avatar.length > 0
+                                    ?
+                                    <Image
+                                        source={{ uri: this.state.avatar }}
+                                        style={styles.avatar}
+                                    />
+                                    :
+                                    <Image
+                                        source={require("../../assets/icon/user.png")}
+                                        style={styles.avatar}
+                                    />
+                            }
                         </View>
                         <View style={styles.nameContain}>
                             <Text style={{ fontSize: 25, fontWeight: "bold" }}>
-                                Duy Trần
+                                {this.state.name}
                             </Text>
                             <Text style={{ fontSize: 14, color: '#353b48' }}>
                                 Xem Thông Tin

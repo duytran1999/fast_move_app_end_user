@@ -584,23 +584,29 @@ const mapDispatchToProps = (dispatch, props) => {
                 .auth()
                 .createUserWithEmailAndPassword(userName, passWord)
                 .then(() => {
-                    FirebaseApp.firestore().collection("User").add({
-                        userName: userName,
-                        passWord: passWord,
-                        imageAva: "",
-                        displayName: displayName,
-                        sexUser: sex,
-                        dateOfBirth: birthday,
-                        email: email,
-                        phone: phone
 
-                    })
-                        .then((docRef) => {
-                            console.log("Document written with ID: ", docRef.id);
-                        })
-                        .catch((error) => {
-                            console.error("Error adding document: ", error);
-                        });
+                    FirebaseApp.auth().onAuthStateChanged((user) => {
+                        if (user) {
+                            var uid = user.uid;
+                            FirebaseApp.firestore().collection("User").doc(uid).set({
+                                userName: userName,
+                                passWord: passWord,
+                                imageAva: "",
+                                displayName: displayName,
+                                sexUser: sex,
+                                dateOfBirth: birthday,
+                                email: email,
+                                phone: phone
+
+                            })
+                                .then((docRef) => {
+                                    console.log("Document written with ID: ", docRef.id);
+                                })
+                                .catch((error) => {
+                                    console.error("Error adding document: ", error);
+                                });
+                        }
+                    });
                 })
                 .then(() => {
                     SetAccount('userAccount', { userName, passWord })

@@ -412,9 +412,7 @@ export class ConfirmOrder extends Component {
                     tripMoney: this.props.route.params.resultTrip,
                     durationTrip: this.props.durationTrip
                 })
-            } else {
-                alert("Refresh App, pls")
-            }
+            } 
         });
         this.setState({
             navigateSearchDriver: !navigateSearchDriver
