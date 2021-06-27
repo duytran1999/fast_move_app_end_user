@@ -45,23 +45,26 @@ class Drawer extends Component {
     render() {
         return (
             <SafeAreaView style={GlobalStyles.droidSafeArea}>
-                <View style={styles.headerContain}>
-                    <View>
-                        <Image
-                            source={require('../../assets/picture/mer1.jpg')}
-                            style={styles.avatar}
-                        />
+                <TouchableOpacity
+                    onPress={() => this.props.navigation.navigate('PersonalPage')}
+                >
+                    <View style={styles.headerContain}>
+                        <View>
+                            <Image
+                                source={require('../../assets/picture/mer1.jpg')}
+                                style={styles.avatar}
+                            />
+                        </View>
+                        <View style={styles.nameContain}>
+                            <Text style={{ fontSize: 25, fontWeight: "bold" }}>
+                                Duy Trần
+                            </Text>
+                            <Text style={{ fontSize: 14, color: '#353b48' }}>
+                                Xem Thông Tin
+                            </Text>
+                        </View>
                     </View>
-                    <View style={styles.nameContain}>
-                        <Text style={{ fontSize: 25, fontWeight: "bold" }}>
-                            Duy Trần
-                        </Text>
-                        <Text style={{ fontSize: 14, color: '#353b48' }}>
-                            Xem Thông Tin
-                        </Text>
-                    </View>
-
-                </View>
+                </TouchableOpacity>
 
                 <View style={{
                     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
@@ -98,7 +101,7 @@ class Drawer extends Component {
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={{ marginVertical: 10, marginHorizontal: 10 }}
-                        onPress={() => {this.props.navigation.navigate("OrderManage") }}
+                        onPress={() => { this.props.navigation.navigate("OrderManage") }}
                     >
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <Image

@@ -64,7 +64,7 @@ export class OrderManage extends Component {
     }
     renderHeader = () => {
         return (
-            <View style={{backgroundColor:'white',marginBottom:10}}>
+            <View style={{ backgroundColor: 'white', marginBottom: 10 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 10, marginVertical: 10 }}>
                     <TouchableOpacity
                         onPress={() => this.goBackHomeScreen()}
@@ -137,10 +137,26 @@ export class OrderManage extends Component {
         )
     }
     render() {
+        if (Platform.OS == 'android') {
+            return (
+                <>
+                    <StatusBar backgroundColor={"#D7443E"} />
+                    <SafeAreaView style={[GlobalStyles.droidSafeArea], {}}>
+                        {this.renderHeader()}
+                        <View>
+                            <FlatList
+                                data={this.state.listOrder}
+                                renderItem={({ item, index }) => this.renderItemOrder(item, index)}
+                            />
+                        </View>
+                    </SafeAreaView>
+                </>
+            )
+        }
         return (
             <>
-                <StatusBar backgroundColor={"#D7443E"} />
-                <SafeAreaView style={[GlobalStyles.droidSafeArea], {}}>
+                <View style={{ height: ifIphoneX() ? 50 : 20, backgroundColor: 'white' }} />
+                <View>
                     {this.renderHeader()}
                     <View>
                         <FlatList
@@ -148,9 +164,10 @@ export class OrderManage extends Component {
                             renderItem={({ item, index }) => this.renderItemOrder(item, index)}
                         />
                     </View>
-                </SafeAreaView>
+                </View>
             </>
         )
+
     }
 }
 

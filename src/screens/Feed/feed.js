@@ -472,15 +472,16 @@ class Feed extends Component {
                         }}
                         ref={c => this.mapView = c}
                         onMapReady={this.fitAllMarkers.bind(this)}
+                        showsUserLocation={true}
                     >
-                        <Marker
+                        {/* <Marker
                             coordinate={this.state.location.coords}
                             image={require('../../assets/icon/pin(2).png')}
-                        />
+                        /> */}
                         {this.showCoordsSender()}
                         {this.showCoordsReceiver()}
 
-                        {this.renderDirectionMap()}
+                        {/* {this.renderDirectionMap()} */}
 
                     </MapView>
                     <View style={{
