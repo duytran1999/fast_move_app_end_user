@@ -7,13 +7,14 @@ import {
 import { connect } from 'react-redux'
 import { CommonActions } from '@react-navigation/native';
 import { Formik } from 'formik';
-
+import Modal from 'react-native-modal';
 import { actSignIn, actSignInFailed } from '../../actions/index'
 import { GetAccount, SetAccount } from '../../api/secure/index'
 import { SignInSchema } from '../../utils/validation'
 import { FirebaseApp } from '../../api/firebase/index'
 import { WIDTH_DEVICE_SCREEN, HEIGHT_DEVICE_SCREEN } from '../../constants/DeviceDimensions'
-
+import { Picker } from '@react-native-picker/picker';
+import { cos } from 'react-native-reanimated';
 // _userName: "abc@gmail.com",
 // _passWord: "Duytran99",
 const size_btn = WIDTH_DEVICE_SCREEN / 2 - 50
@@ -26,11 +27,17 @@ class SignIn extends Component {
             imageData: [
                 require('../../assets/picture/intro/cc1.jpg'),
                 require('../../assets/picture/intro/download.png'),
-            ]
+            ],
+            modalVisible: false,
+            typeClient: 'khachhang'
         }
     }
+    setModalVisible = (visible) => {
+        this.setState({ modalVisible: visible });
+    }
     submit(values) {
-        this.props.SignIn(values.email, values.password)
+        this.props.SignIn(values.email, values.password, values.typeClient)
+        this.setModalVisible(!this.state.modalVisible)
     }
     render() {
         let { errorMsgSignIn } = this.props
@@ -103,11 +110,17 @@ class SignIn extends Component {
                                 ) : (<View />)
                         }
                         <Formik
-                            initialValues={{ email: 'tranduy@gmail.com', password: '123456' }}
-                            onSubmit={values => this.submit(values)}
+                            initialValues={{
+                                email: 'duy@gmail.com',
+                                password: '123456',
+                                typeClient: 'khachhang'
+                            }}
+                            onSubmit={values => {
+                                this.submit(values)
+                            }}
                             validationSchema={SignInSchema}
                         >
-                            {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+                            {({ handleChange, handleBlur, handleSubmit, setFieldValue, values, errors, touched }) => (
                                 <View style={{}}>
                                     <View>
                                         <View style={styles.input}>
@@ -115,7 +128,7 @@ class SignIn extends Component {
                                                 <Text style={{ color: 'red' }}>{errors.email}</Text>
                                             ) : null}
                                             <Text style={styles.labelTxt}>
-                                                Username/Email </Text>
+                                                Email / Số Điện Thoại </Text>
                                             <TextInput
                                                 onChangeText={
                                                     handleChange("email")
@@ -137,9 +150,6 @@ class SignIn extends Component {
                                                 onBlur={handleBlur("password")}
                                                 value={values.password}
                                                 secureTextEntry={true} />
-                                        </View>
-                                        <View style={{ backgroundColor: 'red', flex: 1 }}>
-
                                         </View>
                                     </View>
                                     <View style={{
@@ -185,24 +195,59 @@ class SignIn extends Component {
                                             width: size_btn, height: size_btn, position: 'absolute', left: WIDTH_DEVICE_SCREEN - 40 - size_btn
                                             , justifyContent: 'center', alignItems: 'center'
                                         }}>
+
                                             <TouchableOpacity
                                                 style={{
                                                     width: size_btn / 1.5, height: size_btn / 1.5, borderRadius: size_btn / 3, borderWidth: 1, justifyContent: 'center', alignItems: 'center',
                                                     backgroundColor: '#D7443E', borderColor: "#D7443E",
-                                                    //shadowColor: "#ff6b81",
-                                                    // shadowOffset: {
-                                                    //     width: 0,
-                                                    //     height: 12,
-                                                    // },
-                                                    // shadowOpacity: 1,
-                                                    // shadowRadius: 16.00,
-                                                    // elevation: 50,
                                                 }}
-                                                onPress={handleSubmit}>
+                                                // onPress={handleSubmit}
+                                                onPress={() => this.setModalVisible(!this.state.modalVisible)}
+                                            >
                                                 <Text style={{ fontSize: 15, fontWeight: '600', color: 'white' }}>
                                                     Đăng Nhập
                                                 </Text>
                                             </TouchableOpacity>
+                                            <Modal
+                                                onSwipeComplete={() => this.setModalVisible(!this.state.modalVisible)}
+                                                visible={this.state.modalVisible}
+                                                style={{ marginVertical: 100, }}
+                                            >
+                                                <View style={{
+                                                    flex: 1, backgroundColor: '#ecf0f1', borderRadius: 20, padding: 10,
+                                                    alignItems: "center", justifyContent: 'space-between'
+                                                }}>
+                                                    <View style={{ flex: 1, justifyContent: 'center' }}>
+                                                        <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Bạn là :</Text>
+                                                    </View>
+                                                    <View style={{ flex: 1, justifyContent: 'center' }}>
+                                                        <View style={{ width: WIDTH_DEVICE_SCREEN - 100, height: HEIGHT_DEVICE_SCREEN / 4 }}>
+                                                            <Picker
+                                                                selectedValue={values.typeClient}
+                                                                onValueChange={(itemValue, itemIndex) =>
+                                                                    setFieldValue("typeClient", itemValue)
+                                                                }>
+                                                                <Picker.Item label="Khách hàng" value="khachhang" />
+                                                                <Picker.Item label="Tài Xế" value="taixe" />
+                                                            </Picker>
+                                                        </View>
+                                                    </View>
+                                                    <View style={{ flex: 1, justifyContent: "flex-end" }}>
+                                                        <TouchableOpacity onPress={handleSubmit}>
+                                                            <View style={{
+                                                                alignItems: 'center', justifyContent: 'center',
+                                                                borderRadius: 10,
+                                                                backgroundColor: '#e74c3c', height: 50,
+                                                                width: WIDTH_DEVICE_SCREEN - 200
+                                                            }}>
+                                                                <Text style={{ color: 'white', fontWeight: '800' }}>
+                                                                    Đăng nhập
+                                                                </Text>
+                                                            </View>
+                                                        </TouchableOpacity>
+                                                    </View>
+                                                </View>
+                                            </Modal>
                                         </View>
                                     </View>
                                 </View>
@@ -224,21 +269,30 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        SignIn: (userName, passWord) => {
+        SignIn: (userName, passWord, typeClient) => {
             FirebaseApp
                 .auth()
                 .signInWithEmailAndPassword(userName, passWord)
-
                 .then(() => {
-                    SetAccount('userAccount', { userName, passWord })
-                        .then(() => {
-                            dispatch(actSignIn(userName, passWord))
-                        })
-                        .then(() => {
-                            CommonActions.navigate({
-                                name: "AppStack"
-                            })
-                        })
+                    FirebaseApp.auth().onAuthStateChanged((user) => {
+                        if (user) {
+                            var uid = user.uid;
+                            FirebaseApp.firestore().collection("User").doc(uid).get()
+                                .then(doc => {
+                                    if (typeClient === doc.data().typeClient) {
+                                        SetAccount('userAccount', { userName, passWord, typeClient })
+                                            .then(() => {
+                                                dispatch(actSignIn(userName, passWord, typeClient))
+                                            })
+                                            .then(() => {
+                                                CommonActions.navigate({
+                                                    name: "AppStack"
+                                                })
+                                            })
+                                    }
+                                })
+                        }
+                    });
                 })
                 .catch(function (e) {
                     var errorCode = e.code;

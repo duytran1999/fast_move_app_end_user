@@ -41,7 +41,8 @@ export class ConfirmOrder extends Component {
             tipMoney: 0,
             paymentType: PaymentType[0],
             navigateSearchDriver: false,
-            orderStatus: null
+            orderStatus: "wait_driver",
+            idOrder: ''
         }
     }
     calculateTotalBill = () => {
@@ -374,29 +375,15 @@ export class ConfirmOrder extends Component {
     }
     goToScreenDriver = () => {
         let { navigateSearchDriver } = this.state
-        {
-            // console.log("=============================================================")
-            // console.log("toa do nguoi gui")
-            // console.log(this.props.locationCoordsSender)
-            // console.log("dia chi nguoi gui")
-            // console.log(this.renderLocation(this.props.locationSender))
-            // console.log("toa do nguoi nhan")
-            // console.log(this.props.locationCoordsReceiver)
-            // console.log("dia chi nguoi nhan")
-            // console.log(this.renderLocation(this.props.locationReceiver))
-            // console.log("TT nguoi gui")
-            // console.log(this.props.senderInfo)
-            // console.log("TT nguoi nhan")
-            // console.log(this.props.receiverInfo)
-            // console.log("Khoang cach")
-            // console.log(this.props.distanceTrip)
-            // console.log("=============================================================")
-        }
+
         FirebaseApp.auth().onAuthStateChanged((user) => {
             if (user) {
                 var uid = user.uid;
-                FirebaseApp.firestore().collection("order").doc(uid).collection("historyOrder").add({
-                    orderId: uuidv4(),
+                this.setState({
+                    idOrder: uuidv4()
+                })
+                FirebaseApp.firestore().collection("order").doc(uid).collection("historyOrder").doc(this.state.idOrder).set({
+                    orderId: this.state.idOrder,
                     locationCoordsSender: this.props.locationCoordsSender,
                     locationSender: this.props.locationSender,
                     locationCoordsReceiver: this.props.locationCoordsReceiver,
@@ -410,9 +397,91 @@ export class ConfirmOrder extends Component {
                     paymentType: this.state.paymentType.name,
                     totalBillTrip: this.calculateTotalBill(),
                     tripMoney: this.props.route.params.resultTrip,
-                    durationTrip: this.props.durationTrip
+                    durationTrip: this.props.durationTrip,
+                    noteForDriver: this.state.noteForDriver,
+                    timeDriverReceivesGoods: '',
+                    timeDriverDeliveryGoods: '',
+                    orderStatus: "wait_driver",
                 })
-            } 
+                FirebaseApp.firestore().collection("all_order").doc(this.state.idOrder).set({
+                    orderId: this.state.idOrder,
+                    locationCoordsSender: this.props.locationCoordsSender,
+                    locationSender: this.props.locationSender,
+                    locationCoordsReceiver: this.props.locationCoordsReceiver,
+                    locationReceiver: this.props.locationReceiver,
+                    senderInfo: this.props.senderInfo,
+                    receiverInfo: this.props.receiverInfo,
+                    distanceTrip: this.props.distanceTrip,
+                    createOrder: new Date(),
+                    tipMoney: this.state.tipMoney,
+                    isBigGoods: this.state.isBigGoods,
+                    paymentType: this.state.paymentType.name,
+                    totalBillTrip: this.calculateTotalBill(),
+                    tripMoney: this.props.route.params.resultTrip,
+                    durationTrip: this.props.durationTrip,
+                    noteForDriver: this.state.noteForDriver,
+                    timeDriverReceivesGoods: '',
+                    timeDriverDeliveryGoods: '',
+                    orderStatus: "wait_driver"
+                })
+            }
+        })
+
+        this.setState({
+            navigateSearchDriver: !navigateSearchDriver
+        })
+    }
+    CancelOrder = () => {
+        let { navigateSearchDriver } = this.state
+
+        FirebaseApp.auth().onAuthStateChanged((user) => {
+            if (user) {
+                var uid = user.uid;
+                FirebaseApp.firestore().collection("order").doc(uid).collection("historyOrder").doc(this.state.idOrder).set({
+                    orderId: this.state.idOrder,
+                    locationCoordsSender: this.props.locationCoordsSender,
+                    locationSender: this.props.locationSender,
+                    locationCoordsReceiver: this.props.locationCoordsReceiver,
+                    locationReceiver: this.props.locationReceiver,
+                    senderInfo: this.props.senderInfo,
+                    receiverInfo: this.props.receiverInfo,
+                    distanceTrip: this.props.distanceTrip,
+                    createOrder: new Date(),
+                    tipMoney: this.state.tipMoney,
+                    isBigGoods: this.state.isBigGoods,
+                    paymentType: this.state.paymentType.name,
+                    totalBillTrip: this.calculateTotalBill(),
+                    tripMoney: this.props.route.params.resultTrip,
+                    durationTrip: this.props.durationTrip,
+                    noteForDriver: this.state.noteForDriver,
+                    timeDriverReceivesGoods: '',
+                    timeDriverDeliveryGoods: '',
+                    orderStatus: "cancel_order"
+                }, { merge: true })
+
+                FirebaseApp.firestore().collection("all_order").doc(this.state.idOrder).set({
+                    orderId: this.state.idOrder,
+                    locationCoordsSender: this.props.locationCoordsSender,
+                    locationSender: this.props.locationSender,
+                    locationCoordsReceiver: this.props.locationCoordsReceiver,
+                    locationReceiver: this.props.locationReceiver,
+                    senderInfo: this.props.senderInfo,
+                    receiverInfo: this.props.receiverInfo,
+                    distanceTrip: this.props.distanceTrip,
+                    createOrder: new Date(),
+                    tipMoney: this.state.tipMoney,
+                    isBigGoods: this.state.isBigGoods,
+                    paymentType: this.state.paymentType.name,
+                    totalBillTrip: this.calculateTotalBill(),
+                    tripMoney: this.props.route.params.resultTrip,
+                    durationTrip: this.props.durationTrip,
+                    noteForDriver: this.state.noteForDriver,
+                    timeDriverReceivesGoods: '',
+                    timeDriverDeliveryGoods: '',
+                    orderStatus: "cancel_order"
+                }, { merge: true })
+
+            }
         });
         this.setState({
             navigateSearchDriver: !navigateSearchDriver
@@ -579,9 +648,13 @@ export class ConfirmOrder extends Component {
                                     backgroundColor: '#bdc3c7', flex: 1, height: 50, margin: 5,
                                     alignItems: 'center', justifyContent: 'center'
                                 }}>
-                                    <Text style={{ color: 'white', fontWeight: 'bold' }}>
-                                        Hủy Đơn Hàng
-                                    </Text>
+                                    <TouchableOpacity onPress={() => this.CancelOrder()}>
+                                        <View>
+                                            <Text style={{ color: 'white', fontWeight: 'bold' }}>
+                                                Hủy Đơn Hàng
+                                            </Text>
+                                        </View>
+                                    </TouchableOpacity>
                                 </View>
                                 <View style={{
                                     backgroundColor: '#e74c3c', flex: 1, height: 50, margin: 5,

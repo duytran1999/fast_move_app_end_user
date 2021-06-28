@@ -12,8 +12,8 @@ const INITIAL_STATE = {
     locationReceiverCoords: null,
     receiverInfo: null,
     serviceTransport: null,
-    distanceTrip: null,
-    durationTrip: null
+    distanceTrip: 15,
+    durationTrip: 20
 };
 
 // chú ý initial state là object ko là mảng
@@ -55,6 +55,20 @@ const locationReducer = (state = INITIAL_STATE, action) => {
                 durationTrip: action.durationTrip
             }
         case types.CREATE_NEW_ORDER_TRANSPORT:
+            return {
+                userLocation: null,
+                userLocationString: null,
+                locationSender: null,
+                locationSenderCoords: null,
+                senderInfo: null,
+                locationReceiver: null,
+                locationReceiverCoords: null,
+                receiverInfo: null,
+                serviceTransport: null,
+                distanceTrip: null,
+                durationTrip: null
+            }
+        case types.RESET_LOCATION:
             return {
                 userLocation: null,
                 userLocationString: null,

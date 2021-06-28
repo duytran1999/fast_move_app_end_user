@@ -55,3 +55,9 @@ export const actCreateOrderTransport = () => {
         type: types.CREATE_NEW_ORDER_TRANSPORT,
     }
 }
+
+export const actResetLocation = () => {
+    return {
+        type: types.RESET_LOCATION,
+    }
+}

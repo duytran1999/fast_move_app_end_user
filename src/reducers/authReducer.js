@@ -7,7 +7,8 @@ const INITIAL_STATE = {
     passWord: null,
     errorMsg: null,
     errorMsgSignIn: null,
-    errorMsgSignUp: null
+    errorMsgSignUp: null,
+    typeClient: null
 };
 
 // chú ý initial state là object ko là mảng
@@ -21,6 +22,7 @@ const authReducer = (state = INITIAL_STATE, action) => {
                 isSignout: false,
                 userName: action.userName,
                 passWord: action.passWord,
+                typeClient: action.typeClient,
                 errorMsg: null
             };
         case types.SIGN_IN:
@@ -29,6 +31,7 @@ const authReducer = (state = INITIAL_STATE, action) => {
                 isSignout: false,
                 userName: action.userName,
                 passWord: action.passWord,
+                typeClient: action.typeClient,
                 errorMsgSignIn: null
             };
         case types.SIGN_UP:
@@ -37,6 +40,7 @@ const authReducer = (state = INITIAL_STATE, action) => {
                 isSignout: false,
                 userName: action.userName,
                 passWord: action.passWord,
+                typeClient: action.typeClient,
                 errorMsgSignUp: null
             };
         case types.SIGN_OUT:
@@ -45,6 +49,7 @@ const authReducer = (state = INITIAL_STATE, action) => {
                 isSignout: true,
                 userName: null,
                 passWord: null,
+                typeClient: null,
                 errorMsg: null,
                 errorMsgSignIn: null,
                 errorMsgSignUp: null
@@ -54,7 +59,7 @@ const authReducer = (state = INITIAL_STATE, action) => {
                 isLoading: false,
                 isSignout: true,
                 userName: null,
-                passWord: null,
+                passWord: null, typeClient: null,
                 errorMsgSignIn: action.errorMsg
             };
         case types.SIGN_UP_FAILED:
@@ -62,7 +67,7 @@ const authReducer = (state = INITIAL_STATE, action) => {
                 isLoading: false,
                 isSignout: true,
                 userName: null,
-                passWord: null,
+                passWord: null, typeClient: null,
                 errorMsgSignUp: action.errorMsg
             };
 

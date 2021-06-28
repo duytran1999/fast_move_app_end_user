@@ -9,7 +9,7 @@ import GlobalStyles from '../../constants/GlobalStyle';
 import { listFunction } from './function'
 import { SetAccount, GetAccount, RemoveAccount } from '../../api/secure/index'
 import { actSignOut } from '../../actions/index'
-import { actCreateOrderTransport } from '../../actions/actionLocation'
+import { actCreateOrderTransport, actResetLocation } from '../../actions/actionLocation'
 
 import { ifIphoneX } from 'react-native-iphone-x-helper'
 import { FirebaseApp } from '../../api/firebase/index'
@@ -35,7 +35,7 @@ class Drawer extends Component {
         this.state = {
             //locationString: null
             name: "",
-            avatar:''
+            avatar: ''
         }
     }
 
@@ -47,7 +47,7 @@ class Drawer extends Component {
                     .then(doc => {
                         this.setState({
                             name: doc.data().displayName,
-                            avatar:doc.data().imageAva
+                            avatar: doc.data().imageAva
                         })
                     })
 
@@ -213,6 +213,9 @@ const mapDispatchToProps = (dispatch, props) => {
             FirebaseApp.auth().signOut()
                 .then(() => {
                     RemoveAccount('userAccount').then(() => { console.log("Remove Token Thanh Cong cc") })
+                })
+                .then(() => {
+                    dispatch(actResetLocation())
                 })
                 .then(() => {
                     dispatch(actSignOut())

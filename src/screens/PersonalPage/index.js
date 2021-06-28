@@ -64,10 +64,19 @@ export class PersonalPage extends Component {
                     <SafeAreaView style={[GlobalStyles.droidSafeArea], {}}>
                         <View style={{ flex: 1 }}>
                             <View style={{ alignItems: 'center' }}>
-                                <Image
-                                    source={require('../../assets/picture/dating/dating1.jpg')}
-                                    style={{ height: HEIGHT_DEVICE_SCREEN / 2, width: 500 }}
-                                />
+                                {
+                                    this.state.avatar.length > 0
+                                        ?
+                                        <Image
+                                            source={{ uri: this.state.avatar }}
+                                            style={{ height: HEIGHT_DEVICE_SCREEN / 2, width: 500 }}
+                                        />
+                                        :
+                                        <Image
+                                            source={require("../../assets/icon/user.png")}
+                                            style={{ height: HEIGHT_DEVICE_SCREEN / 2, width: 500 }}
+                                        />
+                                }
                             </View>
                             <View style={{
                                 position: "absolute",
@@ -133,15 +142,19 @@ export class PersonalPage extends Component {
                                     </View>
                                     <View >
                                         <View style={{ marginTop: 10 }}>
-                                            <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: "#7bed9f", padding: 10, borderRadius: 10 }}>
-                                                <Image
-                                                    source={require('../../assets/icon/truck.png')}
-                                                    style={{ width: 50, height: 50 }}
-                                                />
-                                                <Text style={{ fontWeight: '700', marginLeft: 10, color: 'white', fontSize: 17 }}>
-                                                    Xem Tất Cả Chuyến Đi
-                                                </Text>
-                                            </View>
+                                            <TouchableOpacity
+                                                onPress={() => this.props.navigation.navigate('OrderManage')}
+                                            >
+                                                <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: "#7bed9f", padding: 10, borderRadius: 10 }}>
+                                                    <Image
+                                                        source={require('../../assets/icon/truck.png')}
+                                                        style={{ width: 50, height: 50 }}
+                                                    />
+                                                    <Text style={{ fontWeight: '700', marginLeft: 10, color: 'white', fontSize: 17 }}>
+                                                        Xem Tất Cả Chuyến Đi
+                                                    </Text>
+                                                </View>
+                                            </TouchableOpacity>
                                         </View>
                                     </View>
                                 </ScrollView>
@@ -172,10 +185,21 @@ export class PersonalPage extends Component {
                 <StatusBar hidden={true} />
                 <View style={{ flex: 1 }}>
                     <View style={{ alignItems: 'center' }}>
-                        <Image
-                            source={require('../../assets/picture/dating/dating1.jpg')}
-                            style={{ height: HEIGHT_DEVICE_SCREEN / 2, width: 500 }}
-                        />
+                        {
+                            this.state.avatar.length > 0
+                                ?
+                                <Image
+                                    source={{ uri: this.state.avatar }}
+                                    style={{ height: HEIGHT_DEVICE_SCREEN / 2, width: 500 }}
+                                />
+                                :
+                                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                    <Image
+                                        source={require("../../assets/icon/user.png")}
+                                        style={{ height: 100, width: 100 }}
+                                    />
+                                </View>
+                        }
                     </View>
                     <View style={{
                         position: "absolute",
@@ -241,15 +265,19 @@ export class PersonalPage extends Component {
                             </View>
                             <View >
                                 <View style={{ marginTop: 10 }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: "#7bed9f", padding: 10, borderRadius: 10 }}>
-                                        <Image
-                                            source={require('../../assets/icon/truck.png')}
-                                            style={{ width: 50, height: 50 }}
-                                        />
-                                        <Text style={{ fontWeight: '700', marginLeft: 10, color: 'white', fontSize: 17 }}>
-                                            Xem Tất Cả Chuyến Đi
-                                        </Text>
-                                    </View>
+                                    <TouchableOpacity
+                                        onPress={() => this.props.navigation.navigate('OrderManage')}
+                                    >
+                                        <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: "#7bed9f", padding: 10, borderRadius: 10 }}>
+                                            <Image
+                                                source={require('../../assets/icon/truck.png')}
+                                                style={{ width: 50, height: 50 }}
+                                            />
+                                            <Text style={{ fontWeight: '700', marginLeft: 10, color: 'white', fontSize: 17 }}>
+                                                Xem Tất Cả Chuyến Đi
+                                            </Text>
+                                        </View>
+                                    </TouchableOpacity>
                                 </View>
                             </View>
                         </ScrollView>

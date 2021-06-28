@@ -9,32 +9,36 @@ export const actRestoreToken = (user) => {
             type: types.RESTORE_TOKEN,
             userName: acc.userName,
             passWord: acc.passWord,
+            typeClient: acc.typeClient
         }
     } else {
         return {
             type: types.RESTORE_TOKEN,
             userName: null,
             passWord: null,
+            typeClient: null
         }
     }
 }
 
-export const actSignIn = (userName, passWord) => {
+export const actSignIn = (userName, passWord, typeClient) => {
     if (userName) {
         return {
             type: types.SIGN_IN,
             userName: userName,
             passWord: passWord,
+            typeClient: typeClient
         }
     }
 }
 
-export const actSignUp = (userName, passWord) => {
+export const actSignUp = (userName, passWord, typeClient) => {
     if (userName) {
         return {
             type: types.SIGN_UP,
             userName: userName,
             passWord: passWord,
+            typeClient: typeClient
         }
     }
 }

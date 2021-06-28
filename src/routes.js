@@ -29,6 +29,9 @@ import OrderManage from './screens/OrderManage/index'
 import DetailTrip from './screens/DetailTrip/index'
 import PersonalPage from './screens/PersonalPage/index'
 import SettingAccount from './screens/SettingAccount/index'
+
+import HomeDriver from './screens/Driver/Home/index'
+import SettingDriver from './screens/Driver/Setting/index'
 //Component
 
 import DrawerView from './components/Drawer/Drawer'
@@ -42,7 +45,7 @@ import { set } from 'react-native-reanimated';
 const authStack = createStackNavigator();
 const appStack = createStackNavigator();
 const drawerTab = createDrawerNavigator();
-
+const driverStack = createStackNavigator();
 //main drawer, if user is authenticated
 const Stack = createStackNavigator();
 
@@ -72,7 +75,16 @@ class AppStack extends Component {
         )
     }
 }
-
+class DriverStack extends Component {
+    render() {
+        return (
+            <driverStack.Navigator>
+                <driverStack.Screen name="HomeDriver" component={HomeDriver} options={{ headerShown: false }} />
+                <driverStack.Screen name="SettingDriver" component={SettingDriver} options={{ headerShown: false }} />
+            </driverStack.Navigator>
+        )
+    }
+}
 class MainApp extends Component {
     constructor(props) {
         super(props);
@@ -113,9 +125,15 @@ export class Routes extends Component {
                                         <Stack.Screen name="AuthStack" component={AuthStack} options={{ headerShown: false }} />
                                     )
                                     :
-                                    (
-                                        <Stack.Screen name="MainApp" component={MainApp} options={{ headerShown: false }} />
-                                    )
+                                    this.props.typeClient === "khachhang"
+                                        ?
+                                        (
+                                            <Stack.Screen name="MainApp" component={MainApp} options={{ headerShown: false }} />
+                                        )
+                                        :
+                                        (
+                                            <Stack.Screen name="DriverStack" component={DriverStack} options={{ headerShown: false }} />
+                                        )
                             )
                     }
                 </Stack.Navigator>
@@ -132,6 +150,7 @@ const mapStateToProps = (state) => {
         isSignout: state.authReducer.isSignout,
         userName: state.authReducer.userName,
         passWord: state.authReducer.passWord,
+        typeClient: state.authReducer.typeClient
     }
 }
 
