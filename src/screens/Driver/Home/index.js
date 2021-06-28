@@ -28,10 +28,14 @@ export class Home extends Component {
         super(props)
         this.state = {
             isWorking: true,
-            listOrder: []
+            listOrder: [],
+            loading: true
         }
     }
     componentDidMount() {
+        this.getOrderList()
+    }
+    getOrderList = () => {
         FirebaseApp.firestore().collection("all_order")
             .onSnapshot((querySnapshot => {
                 let order = []
@@ -42,7 +46,8 @@ export class Home extends Component {
                     })
                 })
                 this.setState({
-                    listOrder: order
+                    listOrder: order,
+                    loading: false
                 })
             }))
     }
@@ -101,8 +106,15 @@ export class Home extends Component {
     convertObjectLocationToString = (location, detailLocation) => {
         return location.district + " " + location.subregion + " " + location.city
     }
+    receivesThisOrder = (item) => {
+        FirebaseApp.firestore().collection("all_order").doc(item.orderId).set({
+            orderStatus: "finded_driver_for_your_order"
+        }, { merge: true })
+        FirebaseApp.firestore().collection("order").doc(item.idUserCreateOrder).collection("historyOrder").doc(item.orderId).set({
+            orderStatus: "finded_driver_for_your_order"
+        }, { merge: true })
+    }
     render() {
-        console.log(this.state.listOrder)
         return (
             <>
                 <ImageBackground
@@ -132,6 +144,8 @@ export class Home extends Component {
                                     showsHorizontalScrollIndicator
                                     pagingEnabled
                                     bounces
+                                    onRefresh={() => this.getOrderList()}
+                                    refreshing={this.state.loading}
                                     renderItem={({ item, index }) =>
                                         <View
                                             key={index}
@@ -245,7 +259,7 @@ export class Home extends Component {
                                                             flex: 1, alignItems: 'center', justifyContent: 'center',
                                                             borderRadius: 10, backgroundColor: '#e84118', height: 50, marginLeft: 5
                                                         }}>
-                                                            <TouchableOpacity>
+                                                            <TouchableOpacity onPress={() => this.receivesThisOrder(item)}>
                                                                 <View>
                                                                     <Text style={{ fontWeight: 'bold', color: 'white' }}>
                                                                         Nhận đơn

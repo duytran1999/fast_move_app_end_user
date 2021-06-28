@@ -29,6 +29,7 @@ import OrderManage from './screens/OrderManage/index'
 import DetailTrip from './screens/DetailTrip/index'
 import PersonalPage from './screens/PersonalPage/index'
 import SettingAccount from './screens/SettingAccount/index'
+import WaitDriver from './screens/WaitDriver/index'
 
 import HomeDriver from './screens/Driver/Home/index'
 import SettingDriver from './screens/Driver/Setting/index'
@@ -67,6 +68,7 @@ class AppStack extends Component {
             <appStack.Navigator>
                 <appStack.Screen name="HomeTab" component={Feed} options={{ headerShown: false }} />
                 <appStack.Screen name="ConfirmOrder" component={ConfirmOrder} options={{ headerShown: false, gestureEnabled: false }} />
+                <appStack.Screen name="WaitDriver" component={WaitDriver} options={{ headerShown: false, gestureEnabled: false }} />
                 <appStack.Screen name="OrderManage" component={OrderManage} options={{ headerShown: false, gestureEnabled: false }} />
                 <appStack.Screen name="DetailTrip" component={DetailTrip} options={{ headerShown: false, gestureEnabled: false }} />
                 <appStack.Screen name="PersonalPage" component={PersonalPage} options={{ headerShown: false, gestureEnabled: false }} />

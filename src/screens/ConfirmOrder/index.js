@@ -374,8 +374,6 @@ export class ConfirmOrder extends Component {
         })
     }
     goToScreenDriver = () => {
-        let { navigateSearchDriver } = this.state
-
         FirebaseApp.auth().onAuthStateChanged((user) => {
             if (user) {
                 var uid = user.uid;
@@ -402,149 +400,43 @@ export class ConfirmOrder extends Component {
                     timeDriverReceivesGoods: '',
                     timeDriverDeliveryGoods: '',
                     orderStatus: "wait_driver",
+                    idUserCreateOrder: uid,
+                    serviceType: this.props.route.params.serviceType
+                }).then(() => {
+                    FirebaseApp.firestore().collection("all_order").doc(this.state.idOrder).set({
+                        orderId: this.state.idOrder,
+                        locationCoordsSender: this.props.locationCoordsSender,
+                        locationSender: this.props.locationSender,
+                        locationCoordsReceiver: this.props.locationCoordsReceiver,
+                        locationReceiver: this.props.locationReceiver,
+                        senderInfo: this.props.senderInfo,
+                        receiverInfo: this.props.receiverInfo,
+                        distanceTrip: this.props.distanceTrip,
+                        createOrder: new Date(),
+                        tipMoney: this.state.tipMoney,
+                        isBigGoods: this.state.isBigGoods,
+                        paymentType: this.state.paymentType.name,
+                        totalBillTrip: this.calculateTotalBill(),
+                        tripMoney: this.props.route.params.resultTrip,
+                        durationTrip: this.props.durationTrip,
+                        noteForDriver: this.state.noteForDriver,
+                        timeDriverReceivesGoods: '',
+                        timeDriverDeliveryGoods: '',
+                        orderStatus: "wait_driver",
+                        idUserCreateOrder: uid,
+                        serviceType: this.props.route.params.serviceType
+                    }).then(() => {
+                        this.props.navigation.navigate("WaitDriver", {
+                            idOrder: this.state.idOrder,
+                            serviceType: this.props.route.params.serviceType
+                        })
+                    })
                 })
-                FirebaseApp.firestore().collection("all_order").doc(this.state.idOrder).set({
-                    orderId: this.state.idOrder,
-                    locationCoordsSender: this.props.locationCoordsSender,
-                    locationSender: this.props.locationSender,
-                    locationCoordsReceiver: this.props.locationCoordsReceiver,
-                    locationReceiver: this.props.locationReceiver,
-                    senderInfo: this.props.senderInfo,
-                    receiverInfo: this.props.receiverInfo,
-                    distanceTrip: this.props.distanceTrip,
-                    createOrder: new Date(),
-                    tipMoney: this.state.tipMoney,
-                    isBigGoods: this.state.isBigGoods,
-                    paymentType: this.state.paymentType.name,
-                    totalBillTrip: this.calculateTotalBill(),
-                    tripMoney: this.props.route.params.resultTrip,
-                    durationTrip: this.props.durationTrip,
-                    noteForDriver: this.state.noteForDriver,
-                    timeDriverReceivesGoods: '',
-                    timeDriverDeliveryGoods: '',
-                    orderStatus: "wait_driver"
-                })
+
             }
         })
+    }
 
-        this.setState({
-            navigateSearchDriver: !navigateSearchDriver
-        })
-    }
-    CancelOrder = () => {
-        let { navigateSearchDriver } = this.state
-
-        FirebaseApp.auth().onAuthStateChanged((user) => {
-            if (user) {
-                var uid = user.uid;
-                FirebaseApp.firestore().collection("order").doc(uid).collection("historyOrder").doc(this.state.idOrder).set({
-                    orderId: this.state.idOrder,
-                    locationCoordsSender: this.props.locationCoordsSender,
-                    locationSender: this.props.locationSender,
-                    locationCoordsReceiver: this.props.locationCoordsReceiver,
-                    locationReceiver: this.props.locationReceiver,
-                    senderInfo: this.props.senderInfo,
-                    receiverInfo: this.props.receiverInfo,
-                    distanceTrip: this.props.distanceTrip,
-                    createOrder: new Date(),
-                    tipMoney: this.state.tipMoney,
-                    isBigGoods: this.state.isBigGoods,
-                    paymentType: this.state.paymentType.name,
-                    totalBillTrip: this.calculateTotalBill(),
-                    tripMoney: this.props.route.params.resultTrip,
-                    durationTrip: this.props.durationTrip,
-                    noteForDriver: this.state.noteForDriver,
-                    timeDriverReceivesGoods: '',
-                    timeDriverDeliveryGoods: '',
-                    orderStatus: "cancel_order"
-                }, { merge: true })
-
-                FirebaseApp.firestore().collection("all_order").doc(this.state.idOrder).set({
-                    orderId: this.state.idOrder,
-                    locationCoordsSender: this.props.locationCoordsSender,
-                    locationSender: this.props.locationSender,
-                    locationCoordsReceiver: this.props.locationCoordsReceiver,
-                    locationReceiver: this.props.locationReceiver,
-                    senderInfo: this.props.senderInfo,
-                    receiverInfo: this.props.receiverInfo,
-                    distanceTrip: this.props.distanceTrip,
-                    createOrder: new Date(),
-                    tipMoney: this.state.tipMoney,
-                    isBigGoods: this.state.isBigGoods,
-                    paymentType: this.state.paymentType.name,
-                    totalBillTrip: this.calculateTotalBill(),
-                    tripMoney: this.props.route.params.resultTrip,
-                    durationTrip: this.props.durationTrip,
-                    noteForDriver: this.state.noteForDriver,
-                    timeDriverReceivesGoods: '',
-                    timeDriverDeliveryGoods: '',
-                    orderStatus: "cancel_order"
-                }, { merge: true })
-
-            }
-        });
-        this.setState({
-            navigateSearchDriver: !navigateSearchDriver
-        })
-    }
-    showCoordsSender = () => {
-        console.log("coord in feed")
-        console.log(this.props.locationCoordsSender)
-        if (this.props.locationCoordsSender !== null) {
-            return (
-                <Marker coordinate={this.props.locationCoordsSender} >
-                    <Image
-                        source={require('../../assets/icon/truck.png')}
-                        style={{ height: 50, width: 50 }}
-                    />
-                    <View style={{ backgroundColor: 'white', borderRadius: 10, padding: 5 }}>
-                        <Text style={{ width: 100 }} numberOfLines={2}>
-                            {this.renderLocation(this.props.locationSender)}
-                        </Text>
-                    </View>
-                </Marker>
-            )
-        }
-        return (
-            null
-        )
-    }
-    showCoordsReceiver = () => {
-        console.log("coord in feed")
-        console.log(this.props.locationCoordsReceiver)
-        if (this.props.locationCoordsReceiver !== null) {
-            return (
-                <Marker coordinate={this.props.locationCoordsReceiver} >
-                    <Image
-                        source={require('../../assets/icon/destination.png')}
-                        style={{ height: 50, width: 50 }}
-                    />
-                    <View style={{ backgroundColor: 'white', borderRadius: 10, padding: 5 }}>
-                        <Text style={{ width: 100 }} numberOfLines={1}>
-                            {this.renderLocation(this.props.locationReceiver)}
-                        </Text>
-                    </View>
-                </Marker>
-            )
-        }
-        return (
-            null
-        )
-    }
-    renderLocation = (locationString) => {
-        return locationString.street + " " + locationString.district + " " + locationString.subregion + " " + locationString.city
-    }
-    fitAllMarkers() {
-        this.mapView.fitToCoordinates([this.props.locationCoordsSender, this.props.locationCoordsReceiver], {
-            edgePadding: {
-                right: (WIDTH_DEVICE_WINDOW / 10),
-                bottom: (HEIGHT_DEVICE_WINDOW / 7),
-                left: (WIDTH_DEVICE_WINDOW / 10),
-                top: (HEIGHT_DEVICE_WINDOW / 4),
-            },
-            animated: true,
-        });
-    }
     render() {
         console.log(this.props.locationSender)
         let { navigateSearchDriver } = this.state
