@@ -31,8 +31,10 @@ import PersonalPage from './screens/PersonalPage/index'
 import SettingAccount from './screens/SettingAccount/index'
 import WaitDriver from './screens/WaitDriver/index'
 
+
 import HomeDriver from './screens/Driver/Home/index'
 import SettingDriver from './screens/Driver/Setting/index'
+import MapDriverClient from './screens/Driver/MapDriverClient/index'
 //Component
 
 import DrawerView from './components/Drawer/Drawer'
@@ -83,6 +85,7 @@ class DriverStack extends Component {
             <driverStack.Navigator>
                 <driverStack.Screen name="HomeDriver" component={HomeDriver} options={{ headerShown: false }} />
                 <driverStack.Screen name="SettingDriver" component={SettingDriver} options={{ headerShown: false }} />
+                <driverStack.Screen name="MapDriverClient" component={MapDriverClient} options={{ headerShown: false }} />
             </driverStack.Navigator>
         )
     }

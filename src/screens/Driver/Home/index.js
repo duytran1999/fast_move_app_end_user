@@ -21,7 +21,9 @@ import { actSignOut } from '../../../actions/index'
 import { HEIGHT_DEVICE_SCREEN, HEIGHT_DEVICE_WINDOW, WIDTH_DEVICE_WINDOW, } from '../../../constants/DeviceDimensions';
 
 import { SetAccount, GetAccount, RemoveAccount } from '../../../api/secure/index'
-import { cos } from 'react-native-reanimated';
+
+
+const ASPECT_RATIO = WIDTH_DEVICE_WINDOW / HEIGHT_DEVICE_WINDOW
 const size_image_ava = 40
 export class Home extends Component {
     constructor(props) {
@@ -29,27 +31,61 @@ export class Home extends Component {
         this.state = {
             isWorking: true,
             listOrder: [],
-            loading: true
+            loading: true,
+            name: '', avatar: '',
+            locationDriver: null
         }
     }
-    componentDidMount() {
+    async componentDidMount() {
         this.getOrderList()
+        // let { status } = await Location.requestForegroundPermissionsAsync();
+        // let userId = await FirebaseApp.auth().currentUser.uid
+        // if (status !== 'granted') {
+        //     alert('Permission to access location was denied')
+        //     return;
+        // }
+        // let location = await Location.getCurrentPositionAsync({})
+        // this.setState({
+        //     locationDriver: location,
+        // })
+        this.setState({
+            locationDriver: {
+                latitude: 10.776065,
+                longitude: 106.594964,
+                latitudeDelta: 0.01,
+                longitudeDelta: 0.01 * ASPECT_RATIO
+            }
+        })
     }
     getOrderList = () => {
-        FirebaseApp.firestore().collection("all_order")
-            .onSnapshot((querySnapshot => {
-                let order = []
-                querySnapshot.forEach(doc => {
-                    order.push({
-                        ...doc.data(),
-                        key: doc.id
-                    })
-                })
-                this.setState({
-                    listOrder: order,
-                    loading: false
-                })
-            }))
+        FirebaseApp.auth().onAuthStateChanged((user) => {
+            if (user) {
+                var uid = user.uid;
+                FirebaseApp.firestore().collection("User").doc(uid).get()
+                    .then(doc => {
+                        this.setState({
+                            name: doc.data().displayName,
+                            avatar: doc.data().imageAva
+                        })
+                    }).then(() => {
+                        FirebaseApp.firestore().collection("all_order")
+                            .onSnapshot((querySnapshot => {
+                                let order = []
+                                querySnapshot.forEach(doc => {
+                                    order.push({
+                                        ...doc.data(),
+                                        key: doc.id
+                                    })
+                                })
+                                this.setState({
+                                    listOrder: order,
+                                    loading: false
+                                })
+                            }))
+                    }).then(() => { })
+            }
+        });
+
     }
     renderHeader = () => {
         return (
@@ -108,13 +144,40 @@ export class Home extends Component {
     }
     receivesThisOrder = (item) => {
         FirebaseApp.firestore().collection("all_order").doc(item.orderId).set({
-            orderStatus: "finded_driver_for_your_order"
+            orderStatus: "finded_driver_for_your_order",
+            timeDriverReceivesGoods: new Date(),
+            driverPickUp: {
+                driverName: this.state.name,
+            },
+            locationDriver: this.state.locationDriver
         }, { merge: true })
-        FirebaseApp.firestore().collection("order").doc(item.idUserCreateOrder).collection("historyOrder").doc(item.orderId).set({
-            orderStatus: "finded_driver_for_your_order"
-        }, { merge: true })
+            .then(() => {
+                FirebaseApp.firestore().collection("order").doc(item.idUserCreateOrder).collection("historyOrder").doc(item.orderId).set({
+                    orderStatus: "finded_driver_for_your_order",
+                    timeDriverReceivesGoods: new Date(),
+                    driverPickUp: {
+                        driverName: this.state.name,
+                    },
+                    locationDriver: this.state.locationDriver
+                }, { merge: true })
+            })
+            .then(() => {
+                this.props.navigation.navigate("MapDriverClient", {
+                    itemOrder: item,
+                    locationDriver: this.state.locationDriver,
+                    orderId: item.orderId
+                })
+            })
+
+    }
+    skipOrder = (index) => {
+        console.log("asdasd")
+        this.setState({
+            listOrder: this.state.listOrder.splice(index, 1)
+        })
     }
     render() {
+        console.log(this.state.locationDriver)
         return (
             <>
                 <ImageBackground
@@ -247,7 +310,7 @@ export class Home extends Component {
                                                             flex: 1, alignItems: 'center', justifyContent: 'center',
                                                             borderRadius: 10, borderWidth: 2, borderColor: '#e84118', height: 50, marginRight: 5
                                                         }}>
-                                                            <TouchableOpacity >
+                                                            <TouchableOpacity onPress={() => this.skipOrder(index)}>
                                                                 <View >
                                                                     <Text>
                                                                         Bỏ qua

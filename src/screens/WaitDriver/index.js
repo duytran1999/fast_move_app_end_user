@@ -116,9 +116,31 @@ export class ConfirmOrder extends Component {
             null
         )
     }
+    showCoordsDriver = () => {
+        if (this.state.data.locationDriver !== null) {
+            console.log(this.state.data.locationDriver)
+            return (
+                <Marker coordinate={this.state.data.locationDriver} >
+                    <Image
+                        source={require('../../assets/icon/driver.png')}
+                        style={{ height: 50, width: 50 }}
+                    />
+                    <View style={{ backgroundColor: 'white', borderRadius: 10, padding: 5 }}>
+                        <Text style={{ width: 100 }} numberOfLines={1}>
+                            Tài Xế Đang Ở Đây
+                        </Text>
+                    </View>
+                </Marker>
+            )
+        }
+        return (
+            null
+        )
+    }
     renderLocation = (locationString) => {
         return locationString.street + " " + locationString.district + " " + locationString.subregion + " " + locationString.city
     }
+
     fitAllMarkers() {
         this.mapView.fitToCoordinates([this.state.data.locationCoordsSender, this.state.data.locationCoordsReceiver], {
             edgePadding: {
@@ -130,7 +152,22 @@ export class ConfirmOrder extends Component {
             animated: true,
         });
     }
+    fitAll_Markers() {
+        console.log("Fit marker")
+        console.log(this.state.data.locationDriver)
+        this.mapViewMatchDriver.fitToCoordinates([this.state.data.locationCoordsSender,
+        this.state.data.locationCoordsReceiver, this.state.data.locationDriver], {
+            edgePadding: {
+                right: (WIDTH_DEVICE_WINDOW / 6),
+                bottom: (HEIGHT_DEVICE_WINDOW / 6),
+                left: (WIDTH_DEVICE_WINDOW / 6),
+                top: (HEIGHT_DEVICE_WINDOW / 6),
+            },
+            animated: true,
+        });
+    }
     render() {
+        this.state.data != null ? console.log(this.state.data.locationDriver) : null
         if (this.state.data == null) {
             return (
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -282,10 +319,178 @@ export class ConfirmOrder extends Component {
 
         } else if (this.state.data.orderStatus == 'finded_driver_for_your_order') {
             return (
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <Text>
-                        Đã Tìm Thấy Tài Xế
-                    </Text>
+                <View style={{ flex: 1, }}>
+                    <View style={{ flex: 2, backgroundColor: 'red' }}>
+                        <MapView
+                            style={{ flex: 1 }}
+                            provider='google'
+                            initialRegion={{
+                                latitude: this.state.data.locationCoordsSender.latitude,
+                                longitude: this.state.data.locationCoordsSender.longitude,
+                                latitudeDelta: 0.01,
+                                longitudeDelta: 0.01 * ASPECT_RATIO
+                            }}
+                            ref={c => this.mapViewMatchDriver = c}
+                            onMapReady={this.fitAll_Markers.bind(this)}
+                        >
+                            {this.showCoordsSender()}
+                            {this.showCoordsReceiver()}
+                            {this.showCoordsDriver()}
+                        </MapView>
+                    </View>
+                    <View style={{ flex: 1, backgroundColor: '', paddingHorizontal: 10, paddingVertical: 10 }}>
+                        <View style={{
+                            flex: 1,
+                            flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+                            borderBottomColor: '#535c68', borderBottomWidth: 1.5, paddingBottom: 10
+                        }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                <View>
+                                    {
+                                        this.state.data.driverPickUp.imageAva != null
+                                            ?
+                                            <Image
+                                                source={{ uri: this.state.data.driverPickUp.imageAva }}
+                                                style={{ height: 50, width: 50 }}
+                                            />
+                                            :
+                                            <Image
+                                                source={require('../../assets/icon/driver.png')}
+                                                style={{ height: 50, width: 50 }}
+                                            />
+                                    }
+                                </View>
+                                <View style={{ marginLeft: 10 }}>
+                                    <Text style={{ fontWeight: '800', color: '#30336b' }}>
+                                        {this.state.data.driverPickUp.driverName}
+                                    </Text>
+                                    <Text>
+                                        0948838864
+                                    </Text>
+                                </View>
+                            </View>
+                            <View>
+                                <FontAwesome5
+                                    name={"phone"}
+                                    color={"#535c68"}
+                                    size={40}
+                                />
+                            </View>
+                        </View>
+                        <View style={{
+                            flex: 1, backgroundColor: "#eb4d4b", alignItems: 'center', justifyContent: 'center',
+                            borderRadius: 20, marginVertical: 10
+                        }}>
+                            <Text style={{ fontWeight: '800', fontSize: 17, color: 'white' }} numberOfLines={1}>
+                                Tài xế đang đến nhận hàng từ bạn
+                            </Text>
+                        </View>
+                        <TouchableOpacity
+                            style={{ flex: 1 }}
+                            onPress={() => this.CancelOrder()}
+                        >
+                            <View style={{
+                                alignItems: 'center', justifyContent: 'center',
+                                borderRadius: 20,
+                                borderColor: '#eb4d4b', borderWidth: 2, flex: 1
+                            }}>
+                                <Text style={{ fontWeight: '800', fontSize: 17, color: '#eb4d4b' }} numberOfLines={1}>
+                                    Hủy Đơn Hàng
+                                </Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            )
+
+        }
+        else if (this.state.data.orderStatus == 'picked_up_order') {
+            return (
+                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#f9ca24' }}>
+                    <View>
+                        <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#30336b' }}>
+                            Tài Xế
+                        </Text>
+                        <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#30336b' }}>
+                            Đã Nhận Hàng
+                        </Text>
+                        <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#30336b' }}>
+                            Từ Bạn
+                        </Text>
+
+                    </View>
+                </View>
+            )
+        }
+        else if (this.state.data.orderStatus == 'return_order') {
+            return (
+                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#eb4d4b' }}>
+                    <View>
+                        <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#dff9fb' }}>
+                            Tài Xế
+                        </Text >
+                        <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#dff9fb' }}>
+                            Đã Đưa Hàng Cho Người Nhận
+                        </Text>
+                        <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#dff9fb' }}>
+                            Giao Hàng Thành Công
+                        </Text>
+                        <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                            <View>
+                                <FontAwesome5
+                                    name={"long-arrow-alt-left"}
+                                    size={50}
+                                    color={"#130f40"}
+                                />
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            )
+        }
+        else if (this.state.data.orderStatus == 'finish_order') {
+            return (
+                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#eb4d4b' }}>
+                    <View>
+                        <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#dff9fb' }}>
+                            Hoàn Tất Đơn Hàng
+                        </Text >
+                        <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#dff9fb' }}>
+                            Hẹn Gặp Lại Quý Khách
+                        </Text>
+                        <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                            <View>
+                                <FontAwesome5
+                                    name={"long-arrow-alt-left"}
+                                    size={50}
+                                    color={"#130f40"}
+                                />
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            )
+        }
+        else if (this.state.data.orderStatus == 'cancel_order') {
+            return (
+                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#be2edd' }}>
+                    <View>
+                        <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#dff9fb' }}>
+                            Bạn đã
+                        </Text>
+                        <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#dff9fb' }}>
+                            Hủy Đơn Hàng
+                        </Text>
+                        <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                            <View>
+                                <FontAwesome5
+                                    name={"long-arrow-alt-left"}
+                                    size={50}
+                                    color={"#130f40"}
+                                />
+                            </View>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             )
         }

@@ -634,7 +634,6 @@ const mapDispatchToProps = (dispatch, props) => {
                 .auth()
                 .createUserWithEmailAndPassword(userName, passWord)
                 .then(() => {
-
                     FirebaseApp.auth().onAuthStateChanged((user) => {
                         if (user) {
                             var uid = user.uid;
@@ -660,9 +659,9 @@ const mapDispatchToProps = (dispatch, props) => {
                     });
                 })
                 .then(() => {
-                    SetAccount('userAccount', { userName, passWord ,typeClient})
+                    SetAccount('userAccount', { userName, passWord, typeClient })
                         .then(() => {
-                            dispatch(actSignUp(userName, passWord,typeClient))
+                            dispatch(actSignUp(userName, passWord, typeClient))
                         })
                 })
                 .then(() => {
