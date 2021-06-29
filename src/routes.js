@@ -32,9 +32,9 @@ import SettingAccount from './screens/SettingAccount/index'
 import WaitDriver from './screens/WaitDriver/index'
 
 
-import HomeDriver from './screens/Driver/Home/index'
-import SettingDriver from './screens/Driver/Setting/index'
-import MapDriverClient from './screens/Driver/MapDriverClient/index'
+// import HomeDriver from './screens/Driver/Home/index'
+// import SettingDriver from './screens/Driver/Setting/index'
+// import MapDriverClient from './screens/Driver/MapDriverClient/index'
 //Component
 
 import DrawerView from './components/Drawer/Drawer'
@@ -79,17 +79,17 @@ class AppStack extends Component {
         )
     }
 }
-class DriverStack extends Component {
-    render() {
-        return (
-            <driverStack.Navigator>
-                <driverStack.Screen name="HomeDriver" component={HomeDriver} options={{ headerShown: false }} />
-                <driverStack.Screen name="SettingDriver" component={SettingDriver} options={{ headerShown: false }} />
-                <driverStack.Screen name="MapDriverClient" component={MapDriverClient} options={{ headerShown: false }} />
-            </driverStack.Navigator>
-        )
-    }
-}
+// class DriverStack extends Component {
+//     render() {
+//         return (
+//             <driverStack.Navigator>
+//                 <driverStack.Screen name="HomeDriver" component={HomeDriver} options={{ headerShown: false }} />
+//                 <driverStack.Screen name="SettingDriver" component={SettingDriver} options={{ headerShown: false }} />
+//                 <driverStack.Screen name="MapDriverClient" component={MapDriverClient} options={{ headerShown: false }} />
+//             </driverStack.Navigator>
+//         )
+//     }
+// }
 class MainApp extends Component {
     constructor(props) {
         super(props);
@@ -130,15 +130,10 @@ export class Routes extends Component {
                                         <Stack.Screen name="AuthStack" component={AuthStack} options={{ headerShown: false }} />
                                     )
                                     :
-                                    this.props.typeClient === "khachhang"
-                                        ?
-                                        (
-                                            <Stack.Screen name="MainApp" component={MainApp} options={{ headerShown: false }} />
-                                        )
-                                        :
-                                        (
-                                            <Stack.Screen name="DriverStack" component={DriverStack} options={{ headerShown: false }} />
-                                        )
+                                    (
+                                        <Stack.Screen name="MainApp" component={MainApp} options={{ headerShown: false }} />
+                                    )
+
                             )
                     }
                 </Stack.Navigator>

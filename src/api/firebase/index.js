@@ -1,12 +1,13 @@
 import * as firebase from 'firebase'
 
 const firebaseConfig = {
-    apiKey: "AIzaSyA0wnJmoamaQFb15o7ZAPFzF_g2pnPi8Qw",
-    authDomain: "quanlygiaothong-a9b99.firebaseapp.com",
-    projectId: "quanlygiaothong-a9b99",
-    storageBucket: "quanlygiaothong-a9b99.appspot.com",
-    messagingSenderId: "773066676014",
-    appId: "1:773066676014:web:0df8cb19b7019a98e28cbf"
+    apiKey: "AIzaSyCogzYVNF1ejxp9hSYZigpRbrRWWJA18KE",
+    authDomain: "fastmove-e11aa.firebaseapp.com",
+    projectId: "fastmove-e11aa",
+    storageBucket: "fastmove-e11aa.appspot.com",
+    messagingSenderId: "645032414567",
+    appId: "1:645032414567:web:fc64ac7842ca31c07373c2",
+    measurementId: "G-KYQ4P1NV8Y"
 };
 
 export const FirebaseApp = firebase.initializeApp(firebaseConfig);

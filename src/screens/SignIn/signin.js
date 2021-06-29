@@ -13,8 +13,6 @@ import { GetAccount, SetAccount } from '../../api/secure/index'
 import { SignInSchema } from '../../utils/validation'
 import { FirebaseApp } from '../../api/firebase/index'
 import { WIDTH_DEVICE_SCREEN, HEIGHT_DEVICE_SCREEN } from '../../constants/DeviceDimensions'
-import { Picker } from '@react-native-picker/picker';
-import { cos } from 'react-native-reanimated';
 // _userName: "abc@gmail.com",
 // _passWord: "Duytran99",
 const size_btn = WIDTH_DEVICE_SCREEN / 2 - 50
@@ -202,52 +200,20 @@ class SignIn extends Component {
                                                     backgroundColor: '#D7443E', borderColor: "#D7443E",
                                                 }}
                                                 // onPress={handleSubmit}
-                                                onPress={() => this.setModalVisible(!this.state.modalVisible)}
+                                                onPress={handleSubmit}
+                                            // onPress={() => {
+
+                                            //     FirebaseApp.firestore()
+                                            //     .collection("User")
+                                            //     .doc("SUaUd2mjNQEDvQVnDO5jenVN6k2")
+                                            //     .get().then((doc)=>console.log(doc.data()))
+                                            // }}
                                             >
                                                 <Text style={{ fontSize: 15, fontWeight: '600', color: 'white' }}>
                                                     Đăng Nhập
                                                 </Text>
                                             </TouchableOpacity>
-                                            <Modal
-                                                onSwipeComplete={() => this.setModalVisible(!this.state.modalVisible)}
-                                                visible={this.state.modalVisible}
-                                                style={{ marginVertical: 100, }}
-                                            >
-                                                <View style={{
-                                                    flex: 1, backgroundColor: '#ecf0f1', borderRadius: 20, padding: 10,
-                                                    alignItems: "center", justifyContent: 'space-between'
-                                                }}>
-                                                    <View style={{ flex: 1, justifyContent: 'center' }}>
-                                                        <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Bạn là :</Text>
-                                                    </View>
-                                                    <View style={{ flex: 1, justifyContent: 'center' }}>
-                                                        <View style={{ width: WIDTH_DEVICE_SCREEN - 100, height: HEIGHT_DEVICE_SCREEN / 4 }}>
-                                                            <Picker
-                                                                selectedValue={values.typeClient}
-                                                                onValueChange={(itemValue, itemIndex) =>
-                                                                    setFieldValue("typeClient", itemValue)
-                                                                }>
-                                                                <Picker.Item label="Khách hàng" value="khachhang" />
-                                                                <Picker.Item label="Tài Xế" value="taixe" />
-                                                            </Picker>
-                                                        </View>
-                                                    </View>
-                                                    <View style={{ flex: 1, justifyContent: "flex-end" }}>
-                                                        <TouchableOpacity onPress={handleSubmit}>
-                                                            <View style={{
-                                                                alignItems: 'center', justifyContent: 'center',
-                                                                borderRadius: 10,
-                                                                backgroundColor: '#e74c3c', height: 50,
-                                                                width: WIDTH_DEVICE_SCREEN - 200
-                                                            }}>
-                                                                <Text style={{ color: 'white', fontWeight: '800' }}>
-                                                                    Đăng nhập
-                                                                </Text>
-                                                            </View>
-                                                        </TouchableOpacity>
-                                                    </View>
-                                                </View>
-                                            </Modal>
+
                                         </View>
                                     </View>
                                 </View>

@@ -35,6 +35,7 @@ class SignUp extends Component {
             activityIndicator: true
         })
         console.log(values)
+        console.log("asasd")
         if (values.email == defaultEmail)
             this.props.SignUp(values.phoneNumber, values.password, values.sex, values.birthDay, defaultEmail, values.phoneNumber, values.displayName, values.typeClient)
         if (values.phoneNumber == defaultPhone)
@@ -137,7 +138,7 @@ class SignUp extends Component {
                         displayName: '',
                         birthDay: moment().format('YYYY-MM-DD'),
                         sex: "nam",
-                        typeClient: "khachhang"
+                        typeClient: 'khachhang'
                     }}
                     onSubmit={values => this.submit(values)}
                     validationSchema={SignUpSchema}
@@ -149,55 +150,6 @@ class SignUp extends Component {
                             scrollEnabled={false}
                             ref={(viewPager) => { this.viewPager = viewPager }}
                         >
-                            <View style={{
-                                flex: 1, backgroundColor: '#ffffff',
-                                padding: 15,
-
-                            }}>
-                                {
-                                    this.headerBar()
-                                }
-                                <View style={{ marginTop: 50 }}>
-                                    <Text style={{ fontSize: 18, fontWeight: 'bold' }}> Bạn là :</Text>
-                                    <Picker
-                                        selectedValue={values.typeClient}
-                                        onValueChange={(itemValue, itemIndex) =>
-                                            setFieldValue("typeClient", itemValue)
-                                        }>
-                                        <Picker.Item label="Khách hàng" value="khachhang" />
-                                        <Picker.Item label="Tài Xế" value="taixe" />
-                                    </Picker>
-                                    {errors.typeClient && touched.typeClient ? (
-                                        <View style={{ height: 50 }}>
-                                            <Text style={{ color: 'red' }}>{errors.typeClient}</Text>
-                                        </View>
-
-                                    ) : <View style={{ height: 50 }} />}
-                                    {
-                                        errors.typeClient == null
-                                            ?
-                                            values.typeClient.length > 0
-                                                ?
-                                                <TouchableOpacity
-                                                    style={{ marginTop: 20, }}
-                                                    onPress={() => {
-                                                        if (values.typeClient.length > 0) {
-                                                            this.nextPage(pageInitial)
-                                                        }
-                                                    }}>
-                                                    <View style={{
-                                                        backgroundColor: '#D7443E', height: 50, borderRadius: 25,
-                                                        alignItems: 'center', justifyContent: 'center'
-                                                    }}>
-                                                        <Text style={{ fontSize: 17, color: "white", fontWeight: 'bold' }}>Tiếp Tục</Text>
-                                                    </View>
-                                                </TouchableOpacity>
-                                                : <View />
-                                            : <View />
-                                    }
-
-                                </View>
-                            </View>
                             <View style={{
                                 flex: 1, backgroundColor: '#ffffff',
                                 padding: 15,
@@ -649,9 +601,6 @@ const mapDispatchToProps = (dispatch, props) => {
                                 typeClient: typeClient
 
                             })
-                                .then((docRef) => {
-                                    console.log("Document written with ID: ", docRef.id);
-                                })
                                 .catch((error) => {
                                     console.error("Error adding document: ", error);
                                 });
