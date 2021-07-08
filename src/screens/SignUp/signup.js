@@ -35,12 +35,10 @@ class SignUp extends Component {
             activityIndicator: true
         })
         console.log(values)
-        console.log("asasd")
         if (values.email == defaultEmail)
-            this.props.SignUp(values.phoneNumber, values.password, values.sex, values.birthDay, defaultEmail, values.phoneNumber, values.displayName, values.typeClient)
+            this.props.SignUp(values.phoneNumber, values.password, values.sex, values.birthDay, defaultEmail, values.phoneNumber, values.displayName, this.props.clientType)
         if (values.phoneNumber == defaultPhone)
-            this.props.SignUp(values.email, values.password, values.sex, values.birthDay, values.email, defaultPhone, values.displayName, values.typeClient)
-
+            this.props.SignUp(values.email, values.password, values.sex, values.birthDay, values.email, defaultPhone, values.displayName, this.props.clientType)
     }
     nextPage(pageNow) {
         this.viewPager.setPage(pageNow + 1)
@@ -138,7 +136,6 @@ class SignUp extends Component {
                         displayName: '',
                         birthDay: moment().format('YYYY-MM-DD'),
                         sex: "nam",
-                        typeClient: 'khachhang'
                     }}
                     onSubmit={values => this.submit(values)}
                     validationSchema={SignUpSchema}
@@ -575,7 +572,8 @@ class SignUp extends Component {
 }
 const mapStateToProps = (state) => {
     return {
-        errorMsgSignUp: state.authReducer.errorMsgSignUp
+        errorMsgSignUp: state.authReducer.errorMsgSignUp,
+        clientType: state.authReducer.typeClient
     }
 }
 

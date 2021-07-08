@@ -5,6 +5,7 @@ import { FirebaseApp } from '../api/firebase/index'
 export const actRestoreToken = (user) => {
     if (user != null) {
         const acc = JSON.parse(user)
+        console.log(acc)
         return {
             type: types.RESTORE_TOKEN,
             userName: acc.userName,
@@ -18,6 +19,20 @@ export const actRestoreToken = (user) => {
             passWord: null,
             typeClient: null
         }
+    }
+}
+
+export const actSetClientType_CLIENT = () => {
+    return {
+        type: types.CLIENT_TYPE_CLIENT,
+        typeClient: 'client'
+    }
+}
+
+export const actSetClientType_DRIVER = () => {
+    return {
+        type: types.CLIENT_TYPE_DRIVER,
+        typeClient: 'driver'
     }
 }
 

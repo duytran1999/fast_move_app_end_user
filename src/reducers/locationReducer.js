@@ -12,8 +12,8 @@ const INITIAL_STATE = {
     locationReceiverCoords: null,
     receiverInfo: null,
     serviceTransport: null,
-    distanceTrip: null,
-    durationTrip: null
+    distanceTrip: 199,
+    durationTrip: 19
 };
 
 // chú ý initial state là object ko là mảng

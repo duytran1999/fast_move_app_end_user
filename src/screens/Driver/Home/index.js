@@ -111,7 +111,8 @@ export class Home extends Component {
                             this.state.isWorking == true
                                 ?
                                 <Text style={{ color: '#6ab04c', fontWeight: 'bold', }}>
-                                    Đang Hoạt Động
+                                    {/* Đang Hoạt Động */}
+                                    {this.props.typeClient}
                                 </Text>
                                 :
                                 <Text style={{ color: '#535c68', fontWeight: 'bold', }}>
@@ -177,7 +178,7 @@ export class Home extends Component {
         })
     }
     render() {
-        console.log(this.state.locationDriver)
+
         return (
             <>
                 <ImageBackground
@@ -349,7 +350,7 @@ export class Home extends Component {
 
 
 const mapStateToProps = (state) => ({
-
+    typeClient: state.authReducer.typeClient
 })
 
 const mapDispatchToProps = (dispatch, props) => {
