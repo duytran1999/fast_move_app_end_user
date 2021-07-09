@@ -15,7 +15,7 @@ import { actSignUpFailed, actSignUp } from '../../actions/index'
 import { GetAccount, SetAccount } from '../../api/secure/index'
 import { WIDTH_DEVICE_SCREEN, HEIGHT_DEVICE_SCREEN } from '../../constants/DeviceDimensions'
 import { SignUpSchema } from '../../utils/validation'
-
+import { API_FAST_MOVE, logInUser, createUser } from '../../api/heroku/index'
 const defaultEmail = "tranduytranduytranduy1999abcxyz@gmail.com"
 const defaultPhone = "18121999181219991812199918121999"
 
@@ -597,7 +597,6 @@ const mapDispatchToProps = (dispatch, props) => {
                                 email: email,
                                 phone: phone,
                                 typeClient: typeClient
-
                             })
                                 .catch((error) => {
                                     console.error("Error adding document: ", error);
@@ -606,14 +605,21 @@ const mapDispatchToProps = (dispatch, props) => {
                     });
                 })
                 .then(() => {
-                    SetAccount('userAccount', { userName, passWord, typeClient })
-                        .then(() => {
-                            dispatch(actSignUp(userName, passWord, typeClient))
+                    createUser(userName, email, passWord, phone, typeClient === "driver" ? "DELIVER" : "CUSTOMER")
+                    .then(()=>{
+                        logInUser(userName, passWord, typeClient === "driver" ? "DELIVER" : "CUSTOMER")
+                        .then((acc) => {
+                            let token = acc.token
+                            SetAccount('userAccount', { userName, passWord, typeClient, token })
+                                .then(() => {
+                                    dispatch(actSignUp(userName, passWord, typeClient, token))
+                                })
+                                .then(() => {
+                                    CommonActions.navigate({
+                                        name: "AppStack"
+                                    })
+                                })
                         })
-                })
-                .then(() => {
-                    CommonActions.navigate({
-                        name: "AppStack"
                     })
                 })
                 .catch(function (e) {

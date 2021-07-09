@@ -10,6 +10,7 @@ export const actRestoreToken = (user) => {
             type: types.RESTORE_TOKEN,
             userName: acc.userName,
             passWord: acc.passWord,
+            token: acc.token,
             typeClient: acc.typeClient
         }
     } else {
@@ -17,6 +18,7 @@ export const actRestoreToken = (user) => {
             type: types.RESTORE_TOKEN,
             userName: null,
             passWord: null,
+            token: null,
             typeClient: null
         }
     }
@@ -36,24 +38,26 @@ export const actSetClientType_DRIVER = () => {
     }
 }
 
-export const actSignIn = (userName, passWord, typeClient) => {
+export const actSignIn = (userName, passWord, typeClient,token) => {
     if (userName) {
         return {
             type: types.SIGN_IN,
             userName: userName,
             passWord: passWord,
-            typeClient: typeClient
+            typeClient: typeClient,
+            token:token
         }
     }
 }
 
-export const actSignUp = (userName, passWord, typeClient) => {
+export const actSignUp = (userName, passWord, typeClient,token) => {
     if (userName) {
         return {
             type: types.SIGN_UP,
             userName: userName,
             passWord: passWord,
-            typeClient: typeClient
+            typeClient: typeClient,
+            token:token
         }
     }
 }

@@ -6,6 +6,7 @@ const INITIAL_STATE = {
     userName: null,
     passWord: null,
     errorMsg: null,
+    token: null,
     errorMsgSignIn: null,
     errorMsgSignUp: null,
     typeClient: null
@@ -24,6 +25,7 @@ const authReducer = (state = INITIAL_STATE, action) => {
                 userName: action.userName,
                 passWord: action.passWord,
                 typeClient: action.typeClient,
+                token: action.token,
                 errorMsg: null
             };
         case types.SIGN_IN:
@@ -33,7 +35,8 @@ const authReducer = (state = INITIAL_STATE, action) => {
                 isSignout: false,
                 userName: action.userName,
                 passWord: action.passWord,
-                errorMsgSignIn: null
+                token: action.token,
+                errorMsgSignIn: null,
             };
         case types.SIGN_UP:
             return {
@@ -42,6 +45,7 @@ const authReducer = (state = INITIAL_STATE, action) => {
                 isSignout: false,
                 userName: action.userName,
                 passWord: action.passWord,
+                token: action.token,
                 errorMsgSignUp: null
             };
         case types.SIGN_OUT:
@@ -54,7 +58,8 @@ const authReducer = (state = INITIAL_STATE, action) => {
                 typeClient: null,
                 errorMsg: null,
                 errorMsgSignIn: null,
-                errorMsgSignUp: null
+                errorMsgSignUp: null,
+                token: null,
             };
         case types.SIGN_IN_FAILED:
             return {
@@ -63,6 +68,7 @@ const authReducer = (state = INITIAL_STATE, action) => {
                 isSignout: true,
                 userName: null,
                 passWord: null,
+                token: null,
                 errorMsgSignIn: action.errorMsg
             };
         case types.SIGN_UP_FAILED:
@@ -72,6 +78,7 @@ const authReducer = (state = INITIAL_STATE, action) => {
                 isSignout: true,
                 userName: null,
                 passWord: null,
+                token: null,
                 errorMsgSignUp: action.errorMsg
             };
         case types.CLIENT_TYPE_CLIENT:

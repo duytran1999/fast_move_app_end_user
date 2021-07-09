@@ -161,7 +161,8 @@ const mapStateToProps = (state) => {
         isSignout: state.authReducer.isSignout,
         userName: state.authReducer.userName,
         passWord: state.authReducer.passWord,
-        typeClient: state.authReducer.typeClient
+        typeClient: state.authReducer.typeClient,
+        token: state.authReducer.token
     }
 }
 

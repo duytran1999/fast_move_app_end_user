@@ -29,7 +29,7 @@ import { SetAccount, GetAccount, RemoveAccount } from '../../api/secure/index'
 import { API_KEY_GOOGLE } from '../../constants/api_key'
 import { HEIGHT_DEVICE_WINDOW, WIDTH_DEVICE_WINDOW } from '../../constants/DeviceDimensions';
 import { PaymentType } from './PaymentType'
-
+import { API_FAST_MOVE, createOrder } from '../../api/heroku/index'
 const ASPECT_RATIO = WIDTH_DEVICE_WINDOW / HEIGHT_DEVICE_WINDOW
 export class ConfirmOrder extends Component {
     constructor(props) {
@@ -377,6 +377,7 @@ export class ConfirmOrder extends Component {
         FirebaseApp.auth().onAuthStateChanged((user) => {
             if (user) {
                 var uid = user.uid;
+                let totalbill = this.calculateTotalBill()
                 this.setState({
                     idOrder: uuidv4()
                 })
@@ -401,7 +402,8 @@ export class ConfirmOrder extends Component {
                     timeDriverDeliveryGoods: '',
                     orderStatus: "wait_driver",
                     idUserCreateOrder: uid,
-                    serviceType: this.props.route.params.serviceType
+                    serviceType: this.props.route.params.serviceType,
+                    Commission: totalbill * 0.01
                 }).then(() => {
                     FirebaseApp.firestore().collection("all_order").doc(this.state.idOrder).set({
                         orderId: this.state.idOrder,
@@ -424,19 +426,68 @@ export class ConfirmOrder extends Component {
                         timeDriverDeliveryGoods: '',
                         orderStatus: "wait_driver",
                         idUserCreateOrder: uid,
-                        serviceType: this.props.route.params.serviceType
-                    }).then(() => {
-                        this.props.navigation.navigate("WaitDriver", {
-                            idOrder: this.state.idOrder,
-                            serviceType: this.props.route.params.serviceType
-                        })
+                        serviceType: this.props.route.params.serviceType,
+                        Commission: totalbill * 0.01
                     })
+                        .then(() => {
+                            let receiver = {
+                                name: this.props.receiverInfo.nameReceiver,
+                                phone: this.props.receiverInfo.phoneReceiver,
+                                address: this.renderLocation(this.props.locationReceiver)
+                            }
+                            createOrder("Hàng Nhẹ", receiver, this.renderLocation(this.props.locationSender),
+                                this.state.paymentType.name, this.state.noteForDriver,
+                                totalbill * 0.01, this.props.route.params.resultTrip, totalbill,
+                                this.props.token)
+                                .then((order) => {
+                                    console.log(order._id)
+                                    FirebaseApp.firestore().collection("order").doc(uid).collection("historyOrder").doc(this.state.idOrder).set({
+                                        idOrderApiFastMove: order._id
+                                    }, { merge: true })
+                                        .then(() => {
+                                            FirebaseApp.firestore().collection("all_order").doc(this.state.idOrder).set({
+                                                idOrderApiFastMove: order._id
+                                            }, { merge: true })
+                                        })
+                                })
+                        })
+                        .then(() => {
+                            this.props.navigation.navigate("WaitDriver", {
+                                idOrder: this.state.idOrder,
+                                serviceType: this.props.route.params.serviceType
+                            })
+                        })
                 })
-
             }
         })
     }
-
+    renderLocation = (locationString) => {
+        return locationString.street + " " + locationString.district + " " + locationString.subregion + " " + locationString.city
+    }
+    // createOrder = async (category, receiver, sentFrom, paymentMethod, note) => {
+    //     try {
+    //         let response = await fetch(
+    //             `${API_FAST_MOVE}/api/orders`
+    //             , {
+    //                 method: 'POST',
+    //                 headers: {
+    //                     'Content-Type': 'application/json',
+    //                     Authorization: `Bearer ${this.props.token}`
+    //                 },
+    //                 body: JSON.stringify({
+    //                     "category": category,
+    //                     "receiver": receiver,
+    //                     "sentFrom": sentFrom,
+    //                     "paymentMethod": paymentMethod,
+    //                     "note": note
+    //                 })
+    //             });
+    //         let json = await response.json();
+    //         console.log(json)
+    //     } catch (error) {
+    //         console.error(error);
+    //     }
+    // }
     render() {
         console.log(this.props.locationSender)
         let { navigateSearchDriver } = this.state
@@ -626,6 +677,7 @@ const mapStateToProps = (state) => {
         receiverInfo: state.locationReducer.receiverInfo,
         distanceTrip: state.locationReducer.distanceTrip,
         durationTrip: state.locationReducer.durationTrip,
+        token: state.authReducer.token
     }
 }
 

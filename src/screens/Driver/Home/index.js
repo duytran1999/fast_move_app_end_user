@@ -82,7 +82,9 @@ export class Home extends Component {
                                     loading: false
                                 })
                             }))
-                    }).then(() => { })
+                    }).then(() => {
+
+                    })
             }
         });
 
@@ -95,31 +97,43 @@ export class Home extends Component {
             }}>
                 <View style={{ width: 100 }} >
                     <TouchableOpacity onPress={() => {
-                        this.props.LogOut()
+                        // this.props.LogOut()
+                        this.props.navigation.navigate("SettingDriver")
                     }}>
                         <View>
-                            <Image
-                                source={require('../../../assets/picture/dating/dating1.jpg')}
-                                style={{ width: size_image_ava, height: size_image_ava, borderRadius: size_image_ava / 2 }}
-                            />
+                            {
+                                this.state.avatar.length > 0
+                                    ?
+                                    <Image
+                                        source={{ uri: this.state.avatar }}
+                                        style={{ width: size_image_ava, height: size_image_ava, borderRadius: size_image_ava / 2 }}
+                                    />
+                                    :
+                                    <Image
+                                        source={require('../../../assets/icon/user.png')}
+                                        style={{ width: size_image_ava, height: size_image_ava, borderRadius: size_image_ava / 2 }}
+                                    />
+                            }
                         </View>
                     </TouchableOpacity>
                 </View>
                 <View>
-                    <Text>
-                        {
-                            this.state.isWorking == true
-                                ?
-                                <Text style={{ color: '#6ab04c', fontWeight: 'bold', }}>
-                                    {/* Đang Hoạt Động */}
-                                    {this.props.typeClient}
-                                </Text>
-                                :
-                                <Text style={{ color: '#535c68', fontWeight: 'bold', }}>
-                                    Nghỉ Ngơi
-                                </Text>
-                        }
-                    </Text>
+                    <TouchableOpacity onPress={() => this.props.LogOut()}>
+                        <Text>
+                            {
+                                this.state.isWorking == true
+                                    ?
+                                    <Text style={{ color: '#6ab04c', fontWeight: 'bold', }}>
+                                        Đang Hoạt Động
+
+                                    </Text>
+                                    :
+                                    <Text style={{ color: '#535c68', fontWeight: 'bold', }}>
+                                        Nghỉ Ngơi
+                                    </Text>
+                            }
+                        </Text>
+                    </TouchableOpacity>
                 </View>
                 <View style={{ width: 100, alignItems: 'flex-end' }} >
                     <Switch
@@ -178,7 +192,9 @@ export class Home extends Component {
         })
     }
     render() {
-
+        console.log("=========token driver in home =====================")
+        console.log(this.props.token)
+        console.log("=========token driver in home =====================")
         return (
             <>
                 <ImageBackground
@@ -201,142 +217,149 @@ export class Home extends Component {
                                 />
                             </View>
                             <View style={{ flex: 1, backgroundColor: '', alignItems: 'center' }}>
-                                <FlatList
-                                    data={this.state.listOrder}
-                                    // keyExtractor={item => item.toString()}
-                                    horizontal
-                                    showsHorizontalScrollIndicator
-                                    pagingEnabled
-                                    bounces
-                                    onRefresh={() => this.getOrderList()}
-                                    refreshing={this.state.loading}
-                                    renderItem={({ item, index }) =>
-                                        <View
-                                            key={index}
-                                            style={{
-                                                //backgroundColor: index % 2 == 0 ? "yellow" : "green",
-                                                width: WIDTH_DEVICE_WINDOW - 20,
-                                                padding: 20
-                                            }}
-                                        >
-                                            <View style={{
-                                                flex: 1, backgroundColor: 'white', borderRadius: 10, shadowColor: "#000",
-                                                shadowOffset: {
-                                                    width: 0,
-                                                    height: 5,
-                                                },
-                                                shadowOpacity: 0.36,
-                                                shadowRadius: 6.68,
+                                {
+                                    this.state.isWorking == true
+                                        ?
+                                        <FlatList
+                                            data={this.state.listOrder}
+                                            // keyExtractor={item => item.toString()}
+                                            horizontal
+                                            showsHorizontalScrollIndicator
+                                            pagingEnabled
+                                            bounces
+                                            onRefresh={() => this.getOrderList()}
+                                            refreshing={this.state.loading}
+                                            renderItem={({ item, index }) =>
+                                                <View
+                                                    key={index}
+                                                    style={{
+                                                        //backgroundColor: index % 2 == 0 ? "yellow" : "green",
+                                                        width: WIDTH_DEVICE_WINDOW - 20,
+                                                        padding: 20
+                                                    }}
+                                                >
+                                                    <View style={{
+                                                        flex: 1, backgroundColor: 'white', borderRadius: 10, shadowColor: "#000",
+                                                        shadowOffset: {
+                                                            width: 0,
+                                                            height: 5,
+                                                        },
+                                                        shadowOpacity: 0.36,
+                                                        shadowRadius: 6.68,
 
-                                                elevation: 11,
-                                            }}>
+                                                        elevation: 11,
+                                                    }}>
 
-                                                <View style={{ marginHorizontal: 5, marginVertical: 7 }}>
-                                                    <Text style={{ fontWeight: '900', fontSize: 14, color: '#c23616', marginLeft: 10, marginBottom: 5 }}>
-                                                        Có đơn vận chuyển mới !
-                                                    </Text>
-                                                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                                                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                                            <Image
-                                                                source={index % 2 == 0 ? require('../../../assets/icon/man.png') : require('../../../assets/icon/woman.png')}
-                                                                style={{ width: 50, height: 50, marginRight: 5 }}
-                                                            />
-                                                            <View >
-                                                                <Text style={{ fontWeight: '700', marginBottom: 5 }}>
-                                                                    {item.senderInfo.nameSender}
-                                                                </Text>
-                                                                <Text>
-                                                                    {item.senderInfo.phoneSender}
-                                                                </Text>
-                                                            </View>
-                                                        </View>
-                                                        <View style={{ alignItems: 'flex-end' }}>
-                                                            <Text style={{ fontWeight: 'bold', fontSize: 17 }}>
-                                                                {item.tripMoney.toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}
+                                                        <View style={{ marginHorizontal: 5, marginVertical: 7 }}>
+                                                            <Text style={{ fontWeight: '900', fontSize: 14, color: '#c23616', marginLeft: 10, marginBottom: 5 }}>
+                                                                Có đơn vận chuyển mới !
                                                             </Text>
-                                                            <Text style={{ color: "silver" }}>
-                                                                {`${item.distanceTrip} km`}
-                                                            </Text>
-                                                        </View>
-                                                    </View>
-                                                    <View style={{ marginLeft: 10, marginTop: 20 }}>
-                                                        <View style={{
-                                                            flexDirection: 'row', alignItems: 'center', paddingBottom: 10
-                                                        }}>
-                                                            <View>
-                                                                <Image
-                                                                    source={require('../../../assets/icon/circle.png')}
-                                                                    style={{ width: 30, height: 30, marginRight: 10 }}
-                                                                />
+                                                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                                                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                                                    <Image
+                                                                        source={index % 2 == 0 ? require('../../../assets/icon/man.png') : require('../../../assets/icon/woman.png')}
+                                                                        style={{ width: 50, height: 50, marginRight: 5 }}
+                                                                    />
+                                                                    <View >
+                                                                        <Text style={{ fontWeight: '700', marginBottom: 5 }}>
+                                                                            {item.senderInfo.nameSender}
+                                                                        </Text>
+                                                                        <Text>
+                                                                            {item.senderInfo.phoneSender}
+                                                                        </Text>
+                                                                    </View>
+                                                                </View>
+                                                                <View style={{ alignItems: 'flex-end' }}>
+                                                                    <Text style={{ fontWeight: 'bold', fontSize: 17 }}>
+                                                                        {item.totalBillTrip.toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}
+                                                                    </Text>
+                                                                    <Text style={{ color: "silver" }}>
+                                                                        {`${item.distanceTrip} km`}
+                                                                    </Text>
+                                                                </View>
                                                             </View>
-                                                            <View>
-                                                                <Text style={{ fontWeight: '800', color: 'silver', fontSize: 10 }}>
-                                                                    Điểm lấy hàng
-                                                                </Text>
-                                                                <Text >
-                                                                    {this.convertObjectLocationToStringStreetandCoords(item.locationSender, item.senderInfo)}
-                                                                </Text>
-                                                                <Text >
-                                                                    {this.convertObjectLocationToString(item.locationSender, item.senderInfo)}
-                                                                </Text>
-                                                            </View>
-                                                        </View>
+                                                            <View style={{ marginLeft: 10, marginTop: 20 }}>
+                                                                <View style={{
+                                                                    flexDirection: 'row', alignItems: 'center', paddingBottom: 10
+                                                                }}>
+                                                                    <View>
+                                                                        <Image
+                                                                            source={require('../../../assets/icon/circle.png')}
+                                                                            style={{ width: 30, height: 30, marginRight: 10 }}
+                                                                        />
+                                                                    </View>
+                                                                    <View>
+                                                                        <Text style={{ fontWeight: '800', color: 'silver', fontSize: 10 }}>
+                                                                            Điểm lấy hàng
+                                                                        </Text>
+                                                                        <Text >
+                                                                            {this.convertObjectLocationToStringStreetandCoords(item.locationSender, item.senderInfo)}
+                                                                        </Text>
+                                                                        <Text >
+                                                                            {this.convertObjectLocationToString(item.locationSender, item.senderInfo)}
+                                                                        </Text>
+                                                                    </View>
+                                                                </View>
 
-                                                        <View style={{
-                                                            flexDirection: 'row', alignItems: 'center', paddingTop: 5,
-                                                        }}>
-                                                            <View>
-                                                                <Image
-                                                                    source={require('../../../assets/icon/location.png')}
-                                                                    style={{ width: 30, height: 30, marginRight: 10 }}
-                                                                />
-                                                            </View>
-                                                            <View >
-                                                                <View>
-                                                                    <Text style={{ fontWeight: '800', color: 'silver', fontSize: 10 }}>
-                                                                        Điểm trả hàng
-                                                                    </Text>
-                                                                    <Text >
-                                                                        {this.convertObjectLocationToStringStreetandCoords(item.locationReceiver, item.receiverInfo)}
-                                                                    </Text>
-                                                                    <Text >
-                                                                        {this.convertObjectLocationToString(item.locationReceiver, item.receiverInfo)}
-                                                                    </Text>
+                                                                <View style={{
+                                                                    flexDirection: 'row', alignItems: 'center', paddingTop: 5,
+                                                                }}>
+                                                                    <View>
+                                                                        <Image
+                                                                            source={require('../../../assets/icon/location.png')}
+                                                                            style={{ width: 30, height: 30, marginRight: 10 }}
+                                                                        />
+                                                                    </View>
+                                                                    <View >
+                                                                        <View>
+                                                                            <Text style={{ fontWeight: '800', color: 'silver', fontSize: 10 }}>
+                                                                                Điểm trả hàng
+                                                                            </Text>
+                                                                            <Text >
+                                                                                {this.convertObjectLocationToStringStreetandCoords(item.locationReceiver, item.receiverInfo)}
+                                                                            </Text>
+                                                                            <Text >
+                                                                                {this.convertObjectLocationToString(item.locationReceiver, item.receiverInfo)}
+                                                                            </Text>
+                                                                        </View>
+                                                                    </View>
                                                                 </View>
                                                             </View>
-                                                        </View>
-                                                    </View>
-                                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10, marginHorizontal: 5 }}>
-                                                        <View style={{
-                                                            flex: 1, alignItems: 'center', justifyContent: 'center',
-                                                            borderRadius: 10, borderWidth: 2, borderColor: '#e84118', height: 50, marginRight: 5
-                                                        }}>
-                                                            <TouchableOpacity onPress={() => this.skipOrder(index)}>
-                                                                <View >
-                                                                    <Text>
-                                                                        Bỏ qua
-                                                                    </Text>
+                                                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10, marginHorizontal: 5 }}>
+                                                                <View style={{
+                                                                    flex: 1, alignItems: 'center', justifyContent: 'center',
+                                                                    borderRadius: 10, borderWidth: 2, borderColor: '#e84118', height: 50, marginRight: 5
+                                                                }}>
+                                                                    <TouchableOpacity onPress={() => this.skipOrder(index)}>
+                                                                        <View >
+                                                                            <Text>
+                                                                                Bỏ qua
+                                                                            </Text>
+                                                                        </View>
+                                                                    </TouchableOpacity>
                                                                 </View>
-                                                            </TouchableOpacity>
-                                                        </View>
-                                                        <View style={{
-                                                            flex: 1, alignItems: 'center', justifyContent: 'center',
-                                                            borderRadius: 10, backgroundColor: '#e84118', height: 50, marginLeft: 5
-                                                        }}>
-                                                            <TouchableOpacity onPress={() => this.receivesThisOrder(item)}>
-                                                                <View>
-                                                                    <Text style={{ fontWeight: 'bold', color: 'white' }}>
-                                                                        Nhận đơn
-                                                                    </Text>
+                                                                <View style={{
+                                                                    flex: 1, alignItems: 'center', justifyContent: 'center',
+                                                                    borderRadius: 10, backgroundColor: '#e84118', height: 50, marginLeft: 5
+                                                                }}>
+                                                                    <TouchableOpacity onPress={() => this.receivesThisOrder(item)}>
+                                                                        <View>
+                                                                            <Text style={{ fontWeight: 'bold', color: 'white' }}>
+                                                                                Nhận đơn
+                                                                            </Text>
+                                                                        </View>
+                                                                    </TouchableOpacity>
                                                                 </View>
-                                                            </TouchableOpacity>
+                                                            </View>
                                                         </View>
                                                     </View>
                                                 </View>
-                                            </View>
-                                        </View>
-                                    }
-                                />
+                                            }
+                                        />
+                                        :
+                                        null
+                                }
+
                             </View>
                         </View>
                     </View>
@@ -350,25 +373,13 @@ export class Home extends Component {
 
 
 const mapStateToProps = (state) => ({
-    typeClient: state.authReducer.typeClient
+    typeClient: state.authReducer.typeClient,
+    token: state.authReducer.token,
 })
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        LogOut: () => {
-            FirebaseApp.auth().signOut()
-                .then(() => {
-                    RemoveAccount('userAccount').then(() => { console.log("Remove Token Thanh Cong cc") })
-                })
-                .then(() => {
-                    dispatch(actSignOut())
-                })
-                .then(() => {
-                    CommonActions.navigate({
-                        name: "SignIn"
-                    })
-                })
-        }
+
     }
 }
 

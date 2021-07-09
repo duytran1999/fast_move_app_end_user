@@ -429,6 +429,9 @@ class Feed extends Component {
         }
     }
     render() {
+        console.log("================Token in feed=========================")
+        console.log(this.props.token)
+        console.log("================Token in feed=========================")
         if (this.state.location === null) {
             return (
                 <View style={{ flex: 1, backgroundColor: 'white', alignItems: 'center', justifyContent: 'center' }}>
@@ -481,7 +484,7 @@ class Feed extends Component {
                         {this.showCoordsSender()}
                         {this.showCoordsReceiver()}
 
-                        {this.renderDirectionMap()}
+                        {/* {this.renderDirectionMap()} */}
 
                     </MapView>
                     <View style={{
@@ -617,6 +620,7 @@ const mapStateToProps = (state) => {
         receiverInfo: state.locationReducer.receiverInfo,
         distanceTrip: state.locationReducer.distanceTrip,
         durationTrip: state.locationReducer.durationTrip,
+        token: state.authReducer.token,
     }
 }
 

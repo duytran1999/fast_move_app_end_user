@@ -15,6 +15,7 @@ import { FirebaseApp } from '../../api/firebase/index'
 import { WIDTH_DEVICE_SCREEN, HEIGHT_DEVICE_SCREEN } from '../../constants/DeviceDimensions'
 import { ifIphoneX } from 'react-native-iphone-x-helper'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import { API_FAST_MOVE, logInUser, createUser } from '../../api/heroku/index'
 // _userName: "abc@gmail.com",
 // _passWord: "Duytran99",
 const size_btn = WIDTH_DEVICE_SCREEN / 2 - 50
@@ -105,6 +106,7 @@ class SignIn extends Component {
         }
 
     }
+
     render() {
         let { errorMsgSignIn } = this.props
         console.log(this.props.clientType)
@@ -339,7 +341,9 @@ class SignIn extends Component {
                                                                 borderRadius: 10, borderWidth: 3, backgroundColor: 'white', borderColor: "#D7443E",
                                                                 alignItems: 'center', justifyContent: 'center', height: 60, marginTop: 10
                                                             }}
-                                                            onPress={() => this.props.navigation.navigate("SignUp")}
+                                                            onPress={() =>
+                                                                this.props.navigation.navigate("SignUp")
+                                                            }
                                                         >
                                                             <View >
                                                                 <Text style={{ fontSize: 15, fontWeight: '900', color: '#D7443E' }}>
@@ -505,7 +509,9 @@ class SignIn extends Component {
                                                     borderRadius: 10, borderWidth: 3, backgroundColor: 'white', borderColor: "#D7443E",
                                                     alignItems: 'center', justifyContent: 'center', height: 60, marginTop: 10
                                                 }}
-                                                onPress={() => this.props.navigation.navigate("SignUp")}
+                                                onPress={() =>
+                                                    this.props.navigation.navigate("SignUp")
+                                                }
                                             >
                                                 <View >
                                                     <Text style={{ fontSize: 15, fontWeight: '900', color: '#D7443E' }}>
@@ -524,7 +530,28 @@ class SignIn extends Component {
 
     }
 }
-
+// const logInUser = async (email, password, role) => {
+//     try {
+//         let response = await fetch(
+//             `${API_FAST_MOVE}/api/users/login`
+//             , {
+//                 method: 'POST',
+//                 headers: {
+//                     Accept: 'application/json',
+//                     'Content-Type': 'application/json'
+//                 },
+//                 body: JSON.stringify({
+//                     "email": email,
+//                     "password": password,
+//                     "role": role
+//                 })
+//             });
+//         let json = await response.json();
+//         return json
+//     } catch (error) {
+//         console.error(error);
+//     }
+// }
 const mapStateToProps = (state) => {
     return {
         errorMsgSignIn: state.authReducer.errorMsgSignIn,
@@ -540,14 +567,18 @@ const mapDispatchToProps = (dispatch, props) => {
                 .auth()
                 .signInWithEmailAndPassword(userName, passWord)
                 .then(() => {
-                    SetAccount('userAccount', { userName, passWord, typeClient })
-                        .then(() => {
-                            dispatch(actSignIn(userName, passWord, typeClient))
-                        })
-                        .then(() => {
-                            CommonActions.navigate({
-                                name: "AppStack"
-                            })
+                    logInUser(userName, passWord, typeClient === "driver" ? "DELIVER" : "CUSTOMER")
+                        .then((acc) => {
+                            let token = acc.token
+                            SetAccount('userAccount', { userName, passWord, typeClient, token })
+                                .then(() => {
+                                    dispatch(actSignIn(userName, passWord, typeClient, token))
+                                })
+                                .then(() => {
+                                    CommonActions.navigate({
+                                        name: "AppStack"
+                                    })
+                                })
                         })
                 })
                 .catch(function (e) {
@@ -580,7 +611,6 @@ const styles = StyleSheet.create({
     },
     input: {
         marginTop: 15,
-
     }
 })
 

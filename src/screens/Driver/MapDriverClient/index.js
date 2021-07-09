@@ -17,7 +17,7 @@ import { FirebaseApp } from '../../../api/firebase/index'
 import { CommonActions } from '@react-navigation/native';
 import { connect } from 'react-redux'
 import { actSignOut } from '../../../actions/index'
-
+import { API_FAST_MOVE } from '../../../api/heroku/index'
 import { HEIGHT_DEVICE_SCREEN, HEIGHT_DEVICE_WINDOW, WIDTH_DEVICE_WINDOW, } from '../../../constants/DeviceDimensions';
 
 const ASPECT_RATIO = WIDTH_DEVICE_WINDOW / HEIGHT_DEVICE_WINDOW
@@ -138,6 +138,9 @@ export class MapDriverClient extends Component {
                             timePickUpOrder: new Date()
                         }, { merge: true })
                 })
+                .then(() => {
+                    this.layHang(this.state.data.idOrderApiFastMove, this.props.token)
+                })
         }
         else if (this.state.data.orderStatus === "picked_up_order") {
             FirebaseApp.firestore().collection("all_order").doc(this.props.route.params.itemOrder.orderId)
@@ -166,10 +169,49 @@ export class MapDriverClient extends Component {
                             orderStatus: "finish_order",
                             timeReturnOrder: new Date()
                         }, { merge: true })
+                        .then(() => {
+                            this.traHang(this.state.data.idOrderApiFastMove, this.props.token)
+                        })
                 })
                 .then(() => {
                     this.props.navigation.goBack()
                 })
+        }
+    }
+    layHang = async (idOrder, token) => {
+        try {
+            let response = await fetch(
+                `${API_FAST_MOVE}/api/orders/${idOrder}/pick-deliver`
+                , {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+            let json = await response.json();
+            console.log(json)
+            return json
+        } catch (error) {
+            console.error(error);
+        }
+    }
+    traHang = async (idOrder, token) => {
+        try {
+            let response = await fetch(
+                `${API_FAST_MOVE}/api/orders/${idOrder}/deliver`
+                , {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+            let json = await response.json();
+            console.log(json)
+            return json
+        } catch (error) {
+            console.error(error);
         }
     }
     render() {
@@ -261,15 +303,24 @@ export class MapDriverClient extends Component {
                     </View>
                     <View style={{ flex: 1, }}>
                         <View style={{
-                            backgroundColor: '#dff9fb', width: WIDTH_DEVICE_WINDOW - 20, marginHorizontal: 10, padding: 10, borderRadius: 10
+                            flex: 1,
                         }}>
-                            <Text >
-                                {
-                                    this.state.data.noteForDriver
-                                }
+                            <Text style={{ marginLeft: 10, fontWeight: 'bold' }}>
+                                Ghi chú đơn hàng
                             </Text>
+                            <View style={{
+                                margin: 10, borderRadius: 10, borderWidth: 2, padding: 5, height: HEIGHT_DEVICE_SCREEN / 8 - 50,
+                                borderColor: 'silver'
+                            }}>
+
+                                <Text numberOfLines={3} >
+                                    {
+                                        this.state.data.noteForDriver
+                                    }
+                                </Text>
+                            </View>
                         </View>
-                        <View style={{ marginTop: 20 }}>
+                        <View style={{ flex: 1, justifyContent: 'flex-end' }}>
                             <TouchableOpacity onPress={() => { this.interfaceOrder() }}>
                                 <View style={{
                                     backgroundColor: "#eb4d4b",
@@ -299,7 +350,7 @@ export class MapDriverClient extends Component {
 }
 
 const mapStateToProps = (state) => ({
-
+    token: state.authReducer.token,
 })
 
 const mapDispatchToProps = {
