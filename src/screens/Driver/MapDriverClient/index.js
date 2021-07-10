@@ -174,6 +174,9 @@ export class MapDriverClient extends Component {
                         })
                 })
                 .then(() => {
+                    FirebaseApp.firestore().collection("all_order_realtime").doc(this.props.route.params.itemOrder.orderId).delete()
+                })
+                .then(() => {
                     this.props.navigation.goBack()
                 })
         }

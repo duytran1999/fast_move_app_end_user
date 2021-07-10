@@ -38,26 +38,26 @@ export const actSetClientType_DRIVER = () => {
     }
 }
 
-export const actSignIn = (userName, passWord, typeClient,token) => {
+export const actSignIn = (userName, passWord, typeClient, token) => {
     if (userName) {
         return {
             type: types.SIGN_IN,
             userName: userName,
             passWord: passWord,
             typeClient: typeClient,
-            token:token
+            token: token
         }
     }
 }
 
-export const actSignUp = (userName, passWord, typeClient,token) => {
+export const actSignUp = (userName, passWord, typeClient, token) => {
     if (userName) {
         return {
             type: types.SIGN_UP,
             userName: userName,
             passWord: passWord,
             typeClient: typeClient,
-            token:token
+            token: token
         }
     }
 }
@@ -79,5 +79,18 @@ export const actSignUpFailed = (error) => {
 export const actSignOut = () => {
     return {
         type: types.SIGN_OUT
+    }
+}
+
+
+export const actRestSignInError = () => {
+    return {
+        type: types.RESET_SIGN_IN
+    }
+}
+
+export const actRestSignUpError = () => {
+    return {
+        type: types.RESET_SIGN_UP
     }
 }

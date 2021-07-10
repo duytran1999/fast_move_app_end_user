@@ -70,6 +70,9 @@ export class ConfirmOrder extends Component {
                         }, { merge: true })
                     })
                     .then(() => {
+                        FirebaseApp.firestore().collection("all_order_realtime").doc(this.props.route.params.idOrder).delete()
+                    })
+                    .then(() => {
                         this.props.navigation.goBack()
                     })
             }
@@ -170,9 +173,9 @@ export class ConfirmOrder extends Component {
         this.state.data != null ? console.log(this.state.data.locationDriver) : null
         if (this.state.data == null) {
             return (
-                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                    <Text>
-                        Loading
+                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#e74c3c' }}>
+                    <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold' }}>
+                        Đang Tìm Kiếm Tài Xế
                     </Text>
                 </View>
             )
@@ -196,32 +199,7 @@ export class ConfirmOrder extends Component {
                             {this.showCoordsSender()}
                             {this.showCoordsReceiver()}
                         </MapView>
-                        <View style={{
-                            position: 'absolute',
-                            top: Platform.OS === 'android' ? StatusBar.currentHeight : ifIphoneX() ? 50 : 20,
-                            left: 10
-                        }}>
-                            <TouchableOpacity onPress={() => { }}>
-                                <View style={{
-                                    width: 40, height: 40, borderRadius: 20, backgroundColor: "white",
-                                    justifyContent: 'center', alignItems: 'center',
-                                    shadowColor: "#000",
-                                    shadowOffset: {
-                                        width: 0,
-                                        height: 4,
-                                    },
-                                    shadowOpacity: 0.30,
-                                    shadowRadius: 4.65,
-                                    elevation: 8,
-                                }}>
-                                    <FontAwesome5
-                                        name={"chevron-left"}
-                                        size={25}
-                                        color={"black"}
-                                    />
-                                </View>
-                            </TouchableOpacity>
-                        </View>
+
                         <View style={{ flex: 1, backgroundColor: '#ecf0f1' }}>
                             {
                                 this.state.data.orderStatus === 'wait_driver'
@@ -407,7 +385,7 @@ export class ConfirmOrder extends Component {
         else if (this.state.data.orderStatus == 'picked_up_order') {
             return (
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#f9ca24' }}>
-                    <View>
+                    <View style={{ alignItems: 'center' }}>
                         <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#30336b' }}>
                             Tài Xế
                         </Text>
@@ -425,22 +403,19 @@ export class ConfirmOrder extends Component {
         else if (this.state.data.orderStatus == 'return_order') {
             return (
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#eb4d4b' }}>
-                    <View>
+                    <View style={{ alignItems: 'center' }}>
                         <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#dff9fb' }}>
-                            Tài Xế
-                        </Text >
-                        <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#dff9fb' }}>
-                            Đã Đưa Hàng Cho Người Nhận
+                            Đã Gửi Hàng Cho Người Nhận
                         </Text>
                         <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#dff9fb' }}>
                             Giao Hàng Thành Công
                         </Text>
                         <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-                            <View>
+                            <View style={{ marginTop: 20 }}>
                                 <FontAwesome5
                                     name={"long-arrow-alt-left"}
                                     size={50}
-                                    color={"#130f40"}
+                                    color={"white"}
                                 />
                             </View>
                         </TouchableOpacity>
@@ -451,7 +426,7 @@ export class ConfirmOrder extends Component {
         else if (this.state.data.orderStatus == 'finish_order') {
             return (
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#eb4d4b' }}>
-                    <View>
+                    <View style={{ alignItems: 'center' }}>
                         <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#dff9fb' }}>
                             Hoàn Tất Đơn Hàng
                         </Text >
@@ -459,11 +434,11 @@ export class ConfirmOrder extends Component {
                             Hẹn Gặp Lại Quý Khách
                         </Text>
                         <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-                            <View>
+                            <View style={{ marginTop: 20 }}>
                                 <FontAwesome5
                                     name={"long-arrow-alt-left"}
                                     size={50}
-                                    color={"#130f40"}
+                                    color={"white"}
                                 />
                             </View>
                         </TouchableOpacity>

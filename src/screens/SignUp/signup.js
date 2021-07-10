@@ -11,7 +11,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import moment from 'moment'
 import { Picker } from '@react-native-picker/picker';
 
-import { actSignUpFailed, actSignUp } from '../../actions/index'
+import { actSignUpFailed, actSignUp, actRestSignUpError } from '../../actions/index'
 import { GetAccount, SetAccount } from '../../api/secure/index'
 import { WIDTH_DEVICE_SCREEN, HEIGHT_DEVICE_SCREEN } from '../../constants/DeviceDimensions'
 import { SignUpSchema } from '../../utils/validation'
@@ -116,12 +116,12 @@ class SignUp extends Component {
                                     },
                                     {
                                         text: "Hủy",
-                                        onPress: () => console.log("Cancel Pressed"),
+                                        onPress: () => {this.props.ResetSignUpError(),this.props.navigation.goBack()},
                                         style: "cancel"
                                     },
                                     {
                                         text: "OK",
-                                        onPress: () => console.log("OK Pressed")
+                                        onPress: () => {this.props.ResetSignUpError(),this.props.navigation.goBack()},
                                     }
                                 ]
                             )
@@ -606,21 +606,21 @@ const mapDispatchToProps = (dispatch, props) => {
                 })
                 .then(() => {
                     createUser(userName, email, passWord, phone, typeClient === "driver" ? "DELIVER" : "CUSTOMER")
-                    .then(()=>{
-                        logInUser(userName, passWord, typeClient === "driver" ? "DELIVER" : "CUSTOMER")
-                        .then((acc) => {
-                            let token = acc.token
-                            SetAccount('userAccount', { userName, passWord, typeClient, token })
-                                .then(() => {
-                                    dispatch(actSignUp(userName, passWord, typeClient, token))
-                                })
-                                .then(() => {
-                                    CommonActions.navigate({
-                                        name: "AppStack"
-                                    })
+                        .then(() => {
+                            logInUser(userName, passWord, typeClient === "driver" ? "DELIVER" : "CUSTOMER")
+                                .then((acc) => {
+                                    let token = acc.token
+                                    SetAccount('userAccount', { userName, passWord, typeClient, token })
+                                        .then(() => {
+                                            dispatch(actSignUp(userName, passWord, typeClient, token))
+                                        })
+                                        .then(() => {
+                                            CommonActions.navigate({
+                                                name: "AppStack"
+                                            })
+                                        })
                                 })
                         })
-                    })
                 })
                 .catch(function (e) {
                     var errorCode = e.code;
@@ -635,8 +635,11 @@ const mapDispatchToProps = (dispatch, props) => {
                         dispatch(actSignUpFailed(e.message))
                     }
                 })
+        },
+        ResetSignUpError: () => {
+            dispatch(actRestSignUpError())
         }
-    }
+}
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SignUp)

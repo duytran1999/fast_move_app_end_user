@@ -61,14 +61,14 @@ export class Home extends Component {
         FirebaseApp.auth().onAuthStateChanged((user) => {
             if (user) {
                 var uid = user.uid;
-                FirebaseApp.firestore().collection("User").doc(uid).get()
-                    .then(doc => {
-                        this.setState({
-                            name: doc.data().displayName,
-                            avatar: doc.data().imageAva
-                        })
-                    }).then(() => {
-                        FirebaseApp.firestore().collection("all_order")
+                FirebaseApp.firestore().collection("User").doc(uid).get().then(doc => {
+                    this.setState({
+                        name: doc.data().displayName,
+                        avatar: doc.data().imageAva
+                    })
+                })
+                    .then(() => {
+                        FirebaseApp.firestore().collection("all_order_realtime")
                             .onSnapshot((querySnapshot => {
                                 let order = []
                                 querySnapshot.forEach(doc => {
@@ -211,10 +211,15 @@ export class Home extends Component {
 
                         <View style={{ flex: 12, backgroundColor: "", }}>
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                <Image
-                                    source={require('../../../assets/icon/electronic-board-with-concentric-circles.png')}
-                                    style={{ width: WIDTH_DEVICE_WINDOW / 2 - 100, height: WIDTH_DEVICE_WINDOW / 2 - 100 }}
-                                />
+                                <TouchableOpacity onPress={()=>this.getOrderList()}>
+                                    <View>
+                                        <Image
+                                            source={require('../../../assets/icon/electronic-board-with-concentric-circles.png')}
+                                            style={{ width: WIDTH_DEVICE_WINDOW / 2 - 100, height: WIDTH_DEVICE_WINDOW / 2 - 100 }}
+                                        />
+                                    </View>
+                                </TouchableOpacity>
+
                             </View>
                             <View style={{ flex: 1, backgroundColor: '', alignItems: 'center' }}>
                                 {

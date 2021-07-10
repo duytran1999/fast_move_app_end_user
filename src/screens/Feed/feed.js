@@ -484,7 +484,7 @@ class Feed extends Component {
                         {this.showCoordsSender()}
                         {this.showCoordsReceiver()}
 
-                        {/* {this.renderDirectionMap()} */}
+                         {this.renderDirectionMap()}
 
                     </MapView>
                     <View style={{
@@ -517,7 +517,7 @@ class Feed extends Component {
                         bottom: 10,
                         right: 10
                     }}>
-                        <TouchableOpacity onPress={() => { }}>
+                        <TouchableOpacity onPress={() => {this.fitAllMarkers() }}>
                             <View style={{
                                 width: 40, height: 40, borderRadius: 20, backgroundColor: "white",
                                 justifyContent: 'center', alignItems: 'center',

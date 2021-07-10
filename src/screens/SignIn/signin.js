@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { CommonActions } from '@react-navigation/native';
 import { Formik } from 'formik';
 import Modal from 'react-native-modal';
-import { actSignIn, actSignInFailed, actSetClientType_CLIENT, actSetClientType_DRIVER } from '../../actions/index'
+import { actSignIn, actSignInFailed, actSetClientType_CLIENT, actSetClientType_DRIVER, actRestSignInError } from '../../actions/index'
 import { GetAccount, SetAccount } from '../../api/secure/index'
 import { SignInSchema } from '../../utils/validation'
 import { FirebaseApp } from '../../api/firebase/index'
@@ -235,7 +235,7 @@ class SignIn extends Component {
                                             Giao hàng <Text style={{ fontSize: 35, color: '#D7443E' }}> Fast</Text>
                                         </Text>
                                         <Text style={{ fontSize: 25, fontWeight: 'bold' }}>
-                                            {this.props.clientType} <Text style={{ fontSize: 35, color: '#D7443E' }}>Move</Text>
+                                            Tốc độ        <Text style={{ fontSize: 35, color: '#D7443E' }}>Move</Text>
                                         </Text>
 
                                     </View>
@@ -254,12 +254,12 @@ class SignIn extends Component {
                                                             },
                                                             {
                                                                 text: "Hủy",
-                                                                onPress: () => console.log("Cancel Pressed"),
+                                                                onPress: () => this.props.ResetSignInError(),
                                                                 style: "cancel"
                                                             },
                                                             {
                                                                 text: "OK",
-                                                                onPress: () => console.log("OK Pressed")
+                                                                onPress: () => this.props.ResetSignInError()
                                                             }
                                                         ]
                                                     )
@@ -400,11 +400,11 @@ class SignIn extends Component {
                         paddingHorizontal: 20, paddingVertical: 20
                     }}>
                         <View>
-                            <Text style={{ fontSize: 25, fontWeight: 'bold' }}>
-                                Giao hàng <Text style={{ fontSize: 35, color: '#D7443E' }}> Tài </Text>
-                            </Text>
-                            <Text style={{ fontSize: 25, fontWeight: 'bold' }}>
-                                {this.props.clientType}<Text style={{ fontSize: 35, color: '#D7443E' }}>Xế</Text>
+
+                            <Text style={{ fontSize: 35, color: '#D7443E', fontWeight: 'bold' }}>Tài Xế </Text>
+
+                            <Text style={{ fontSize: 20, }}>
+                                Cùng FastMove vượt qua đại dịch COVID-19
                             </Text>
                         </View>
                         <View style={{ flex: 1 }}>
@@ -422,12 +422,12 @@ class SignIn extends Component {
                                                 },
                                                 {
                                                     text: "Hủy",
-                                                    onPress: () => console.log("Cancel Pressed"),
+                                                    onPress: () => this.props.ResetSignInError(),
                                                     style: "cancel"
                                                 },
                                                 {
                                                     text: "OK",
-                                                    onPress: () => console.log("OK Pressed")
+                                                    onPress: () => this.props.ResetSignInError()
                                                 }
                                             ]
                                         )
@@ -600,6 +600,9 @@ const mapDispatchToProps = (dispatch, props) => {
         },
         SetCTDriver: () => {
             dispatch(actSetClientType_DRIVER())
+        },
+        ResetSignInError: () => {
+            dispatch(actRestSignInError())
         }
     }
 }

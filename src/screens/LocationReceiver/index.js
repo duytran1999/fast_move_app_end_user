@@ -241,7 +241,7 @@ export class LocationReceiver extends Component {
                                         </View>
                                         <View style={{ backgroundColor: 'white', paddingHorizontal: 10 }}>
                                             <Text>
-                                                Ádaslnasdlkasd
+                                             
                                             </Text>
                                         </View>
                                         <View>
@@ -577,7 +577,7 @@ export class LocationReceiver extends Component {
                                         </View>
                                         <View style={{ backgroundColor: 'white', paddingHorizontal: 10 }}>
                                             <Text>
-                                                Ádaslnasdlkasd
+                                           
                                             </Text>
                                         </View>
                                         <View>

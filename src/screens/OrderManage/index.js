@@ -135,36 +135,40 @@ export class OrderManage extends Component {
         )
     }
     render() {
-        if (Platform.OS == 'android') {
+        // this.state.listOrder.length > 0 ? console.log(this.state.listOrder[0].createOrder) : console.log("nonen")
+        console.log(this.state.listOrder.length)
+        if (this.state.listOrder.length > 0) {
             return (
                 <>
-                    <StatusBar backgroundColor={"#D7443E"} />
-                    <SafeAreaView style={[GlobalStyles.droidSafeArea], {}}>
+                    <View style={{ marginTop: Platform.OS === 'android' ? StatusBar.currentHeight : ifIphoneX() ? 50 : 20 }} />
+                    <View>
                         {this.renderHeader()}
                         <View>
                             <FlatList
+                                //
                                 data={this.state.listOrder}
-                                renderItem={({ item, index }) => this.renderItemOrder(item, index)}
+                                renderItem={({ item, index }) =>  this.renderItemOrder(item, index)}
                             />
                         </View>
-                    </SafeAreaView>
+                    </View>
                 </>
             )
         }
-        return (
-            <>
-                <View style={{ height: ifIphoneX() ? 50 : 20, backgroundColor: 'white' }} />
-                <View>
-                    {this.renderHeader()}
+        else {
+            return (
+                <>
+                    <View style={{ marginTop: Platform.OS === 'android' ? StatusBar.currentHeight : ifIphoneX() ? 50 : 20 }} />
                     <View>
-                        <FlatList
-                            data={this.state.listOrder}
-                            renderItem={({ item, index }) => this.renderItemOrder(item, index)}
-                        />
+                        {this.renderHeader()}
+                        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                            <Text style={{ fontSize: 17, fontWeight: 'bold' }}>
+                                Bạn chưa có đơn vận chuyển !
+                            </Text>
+                        </View>
                     </View>
-                </View>
-            </>
-        )
+                </>
+            )
+        }
 
     }
 }

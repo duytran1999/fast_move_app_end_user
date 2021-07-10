@@ -428,6 +428,31 @@ export class ConfirmOrder extends Component {
                         idUserCreateOrder: uid,
                         serviceType: this.props.route.params.serviceType,
                         Commission: totalbill * 0.01
+                    }).then(() => {
+                        FirebaseApp.firestore().collection("all_order_realtime").doc(this.state.idOrder).set({
+                            orderId: this.state.idOrder,
+                            locationCoordsSender: this.props.locationCoordsSender,
+                            locationSender: this.props.locationSender,
+                            locationCoordsReceiver: this.props.locationCoordsReceiver,
+                            locationReceiver: this.props.locationReceiver,
+                            senderInfo: this.props.senderInfo,
+                            receiverInfo: this.props.receiverInfo,
+                            distanceTrip: this.props.distanceTrip,
+                            createOrder: new Date(),
+                            tipMoney: this.state.tipMoney,
+                            isBigGoods: this.state.isBigGoods,
+                            paymentType: this.state.paymentType.name,
+                            totalBillTrip: this.calculateTotalBill(),
+                            tripMoney: this.props.route.params.resultTrip,
+                            durationTrip: this.props.durationTrip,
+                            noteForDriver: this.state.noteForDriver,
+                            timeDriverReceivesGoods: '',
+                            timeDriverDeliveryGoods: '',
+                            orderStatus: "wait_driver",
+                            idUserCreateOrder: uid,
+                            serviceType: this.props.route.params.serviceType,
+                            Commission: totalbill * 0.01
+                        })
                     })
                         .then(() => {
                             let receiver = {
@@ -464,30 +489,6 @@ export class ConfirmOrder extends Component {
     renderLocation = (locationString) => {
         return locationString.street + " " + locationString.district + " " + locationString.subregion + " " + locationString.city
     }
-    // createOrder = async (category, receiver, sentFrom, paymentMethod, note) => {
-    //     try {
-    //         let response = await fetch(
-    //             `${API_FAST_MOVE}/api/orders`
-    //             , {
-    //                 method: 'POST',
-    //                 headers: {
-    //                     'Content-Type': 'application/json',
-    //                     Authorization: `Bearer ${this.props.token}`
-    //                 },
-    //                 body: JSON.stringify({
-    //                     "category": category,
-    //                     "receiver": receiver,
-    //                     "sentFrom": sentFrom,
-    //                     "paymentMethod": paymentMethod,
-    //                     "note": note
-    //                 })
-    //             });
-    //         let json = await response.json();
-    //         console.log(json)
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // }
     render() {
         console.log(this.props.locationSender)
         let { navigateSearchDriver } = this.state
@@ -510,32 +511,7 @@ export class ConfirmOrder extends Component {
                             {this.showCoordsSender()}
                             {this.showCoordsReceiver()}
                         </MapView>
-                        <View style={{
-                            position: 'absolute',
-                            top: Platform.OS === 'android' ? StatusBar.currentHeight : ifIphoneX() ? 50 : 20,
-                            left: 10
-                        }}>
-                            <TouchableOpacity onPress={() => this.backToBillScreen()}>
-                                <View style={{
-                                    width: 40, height: 40, borderRadius: 20, backgroundColor: "white",
-                                    justifyContent: 'center', alignItems: 'center',
-                                    shadowColor: "#000",
-                                    shadowOffset: {
-                                        width: 0,
-                                        height: 4,
-                                    },
-                                    shadowOpacity: 0.30,
-                                    shadowRadius: 4.65,
-                                    elevation: 8,
-                                }}>
-                                    <FontAwesome5
-                                        name={"chevron-left"}
-                                        size={25}
-                                        color={"black"}
-                                    />
-                                </View>
-                            </TouchableOpacity>
-                        </View>
+
                         <View style={{ flex: 1, backgroundColor: '#ecf0f1' }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: 'white' }}>
                                 <ActivityIndicator
@@ -591,7 +567,7 @@ export class ConfirmOrder extends Component {
                                     backgroundColor: '#bdc3c7', flex: 1, height: 50, margin: 5,
                                     alignItems: 'center', justifyContent: 'center'
                                 }}>
-                                    <TouchableOpacity onPress={() => this.CancelOrder()}>
+                                    <TouchableOpacity onPress={() => {  }}>
                                         <View>
                                             <Text style={{ color: 'white', fontWeight: 'bold' }}>
                                                 Hủy Đơn Hàng

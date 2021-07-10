@@ -81,6 +81,16 @@ const authReducer = (state = INITIAL_STATE, action) => {
                 token: null,
                 errorMsgSignUp: action.errorMsg
             };
+        case types.RESET_SIGN_IN:
+            return {
+                ...state,
+                errorMsgSignIn: null
+            }
+        case types.RESET_SIGN_UP:
+            return {
+                ...state,
+                errorMsgSignUp: null
+            }
         case types.CLIENT_TYPE_CLIENT:
             return {
                 ...state,
