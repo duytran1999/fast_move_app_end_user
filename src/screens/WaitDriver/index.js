@@ -469,6 +469,13 @@ export class ConfirmOrder extends Component {
                 </View>
             )
         }
+        else{
+            <View>
+                <Text>
+                    
+                </Text>
+            </View>
+        }
     }
 }
 const styles = StyleSheet.create({
